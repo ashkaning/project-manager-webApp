@@ -6,15 +6,12 @@
 client/tmpnodejsnpm=cache
 .pnp.js
 client/node_modules
-client/package-lock.json
-package-lock.json
-.package-lock.json
 node_modules
 # testing
 /coverage
 # production
-/build
-client/build
+#/build
+#client/build
 # misc
 .DS_Store
 .env.local

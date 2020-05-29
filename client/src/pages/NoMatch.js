@@ -1,0 +1,23 @@
+import React, { Component } from "react";
+//import API from "../utils/API";
+import { toast } from "react-toastify"
+import { Link } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css'
+import { Col, Row, Container } from "../components/Grid";
+import "./style.css"
+
+class NoMatch extends Component {
+
+    render() {
+        return (
+            <Row>
+                <Col size="md-12">
+                    <h1 className="text-center">Are you lost?!</h1>    
+                </Col>
+            </Row>
+        );
+    }
+
+
+}
+export default NoMatch;

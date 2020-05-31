@@ -20,8 +20,6 @@ module.exports = {
             .catch(err => res.status(422).json(err));
     },
     deleteOneRole: function (req, res) {
-        console.log('---------------------------------')
-        // console.log(req.body)
         db.Roles.destroy({ where: { id: req.body.id } })
             .then(resModel => {
                 res.json(resModel);

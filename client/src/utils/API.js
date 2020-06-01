@@ -19,25 +19,39 @@ export default {
     },
     /* Users API */
     saveNewUser: function (user) {
-        return axios.post("/api/user", user)
+        return axios.post("/api/user", user);
     },
     getAllUsers: function () {
-        return axios.get("/api/user")
+        return axios.get("/api/user");
     },
     /* Services API */
     getAllServices: function () {
-        return axios.get("/api/service")
+        return axios.get("/api/service");
     },
     saveNewService: function (service) {
-        return axios.post("/api/service", service)
+        return axios.post("/api/service", service);
     },
     deleteService: function(service){
-        return axios.delete("/api/service",service)
+        return axios.delete("/api/service",service);
     },
     getOneServiceInfo: function(service){
-        return axios.post("/api/getOneService", service)
+        return axios.post("/api/getOneService", service);
     },
     updateOneService: function(service){
-        return axios.put("/api/service", service)
+        return axios.put("/api/service", service);
+    },
+    getAllCustomers:function(){
+        return axios.get("/api/assignServicesAndAllCustomers");
+    },
+    assignAllServiceToClient: function(service){
+        return axios.post("/api/assignServicesAndAllCustomers", service);
+    },
+    getAllDeparments: function(){
+        return axios.get("/api/getAllDeparments")
+    },
+    /* Services Customers */
+    getAllServiceCustomers: function(){
+        return axios.get("/api/serviceCustomer")
     }
+
 }

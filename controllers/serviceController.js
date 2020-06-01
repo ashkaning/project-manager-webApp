@@ -47,5 +47,22 @@ module.exports = {
         ).then(resModel => {
             res.json(resModel)
         }).catch(err => res.status(422).json(err));
+    },
+    getAllCustomers: function (req, res) {
+        db.Users.findAll({ where: { RoleId: 13 } })
+            .then(resModel => {
+                res.json(resModel)
+            }).catch(err => res.status(422).json(err));
+    },
+    serviceToCustomer: function (req, res) {
+        for (let i of req.body.allServices) {
+            db.Client_Service.create({
+                ServiceId: i.id,
+                clientId: req.body.customerId,
+                employeeId: req.body.DeparmentId
+            }).then(resModel => {
+                res.status(200)
+            }).catch(err => res.status(422).json(err));
+        }
     }
 }

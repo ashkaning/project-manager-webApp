@@ -15,19 +15,26 @@ class Services extends Component {
         updateServiceName: '',
         UpdateSubId: '',
         updateserviceDescription: '',
+        customerId: '',
+        DeparmentId: '',
         allServices: [],
         oneService: [],
         resOneServ: [],
-        resParent: []
+        resParent: [],
+        allCustomers: [],
+        allDeparments: [],
+        servicesToCustomer: []
     }
     componentDidMount() {
         this.getAllServices();
+        this.getAllCustomers();
+        this.getAllDeparments();
     }
     //////////////////////////
     getAllServices = () => {
         API.getAllServices()
-            .then(resAllServoces => {
-                this.setState({ allServices: resAllServoces.data })
+            .then(resAllServices => {
+                this.setState({ allServices: resAllServices.data })
             }).catch(err => toast.error("There is an error. Please contact administrator. (Get ALL Service)"))
     }
     /////////SAVE NNEW SERVICE API FUNCTION////////////////////
@@ -68,6 +75,19 @@ class Services extends Component {
                 }
             }).catch(err => toast.error("There is an error. Please contact administrator (on Get One Info for Editing)"))
     }
+    ////////////////Get all client lists////////////
+    getAllCustomers = () => {
+        API.getAllCustomers()
+            .then(resCustomer => {
+                this.setState({ allCustomers: resCustomer.data })
+            }).catch(err => toast.error("There is an error. Please contact administrator (Getting All Customers)"))
+    }
+    getAllDeparments = () => {
+        API.getAllDeparments()
+            .then(resDeparments => {
+                this.setState({ allDeparments: resDeparments.data })
+            }).catch(err => toast.error("There is an error. Please contact administrator (Getting All Departmnets)"))
+    }
     ////////////GETTING INPUT VALUE/////////////////////
     handleInputChange = event => {
         const { name, value } = event.target;
@@ -81,7 +101,7 @@ class Services extends Component {
             <ol>
                 {this.state.allServices.map((singleMenu) => {
                     if (singleMenu.subId === 0) {
-                        return (<li>{singleMenu.serviceName}
+                        return (<li key={singleMenu.id}>{singleMenu.serviceName}
                             <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleMenu.id)} >Edit</a>
                             <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleMenu.id)} >Delete</a>
                             {this.subMenuMain(singleMenu.id)}</li>)
@@ -97,7 +117,7 @@ class Services extends Component {
 
         return (
             ParentsubMenu.map(singleParentsubMenu => (
-                <ul> <li>{singleParentsubMenu.serviceName}
+                <ul> <li key={singleParentsubMenu.id}>{singleParentsubMenu.serviceName}
                     <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleParentsubMenu.id)} >Edit</a>
                     <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleParentsubMenu.id)}>Delete</a>
                     {this.subMenuMain(singleParentsubMenu.id)}</li></ul>
@@ -129,7 +149,21 @@ class Services extends Component {
                 this.closeButton();
             }).catch(err => toast.error("There is an error. Please contact administrator (update service)"))
     }
-
+    ////////////////Create all services assign to a customer
+    assignAllServiceToClient = () => {
+        /*  let data = {
+             customerId: this.state.customerId,
+             allServices: this.state.allServices
+         } */
+        API.assignAllServiceToClient({
+            customerId: this.state.customerId,
+            allServices: this.state.allServices,
+            DeparmentId: this.state.DeparmentId
+        })
+            .then(savedResult => {
+                toast.success("All services assing to the client successfully")
+            }).catch(err => toast.error("There is an error. Please contact administrator (Assign services to the customer)"))
+    }
     /////////////////////CLOSE EDIT FORM BOX
     closeButton = () => {
         var x = document.getElementById("popupUpdate");
@@ -195,6 +229,7 @@ class Services extends Component {
                             <h2 className="text-center">Add Services</h2>
                         </Col>
                     </Row>
+
                     {/* /////////////////add new service form */}
                     <Row>
                         <Col size="md-12">
@@ -231,14 +266,47 @@ class Services extends Component {
                         </Col>
                     </Row>
                     {/* ///////////////////show services */}
+                    <hr />
                     <Row>
                         <Col size="md-12">
-
+                            <h2 className="text-center">Here are the services</h2>
                             {this.serviceMenu()}
 
                         </Col>
                     </Row>
+                    <hr />
+                    <Row>
+                        <Col size="md-12">
+                            <h2 className="text-center"> Set up services to a client</h2>
+                            <Form.Row>
+                                {this.state.allCustomers.length ? (
+                                    <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
+                                        <option>Choose the customer...</option>
+                                        {this.state.allCustomers.map(singleCustomer => (
+                                            <option key={singleCustomer.id} value={singleCustomer.id}>{singleCustomer.fName} - {singleCustomer.lName}</option>
+                                        ))}
 
+                                    </Form.Control>
+                                ) : (<h3>Loading</h3>)}
+                                <br /><br />
+                                {this.state.allDeparments.length ? (
+                                    <Form.Control onChange={this.handleInputChange} as="select" name="DeparmentId">
+                                        <option>Choose the deparment...</option>
+                                        {this.state.allDeparments.map(singleDeparment => (
+                                            <option key={singleDeparment.id} value={singleDeparment.id}>{singleDeparment.fName} - {singleDeparment.lName}</option>
+                                        ))}
+
+                                    </Form.Control>
+                                ) : (<h3>Loading</h3>)}
+                                <br /><br />
+                                <Button onClick={this.assignAllServiceToClient} variant="primary" type="submit">
+                                    Assign All the services to the selected client
+                            </Button>
+                            </Form.Row>
+
+                        </Col>
+
+                    </Row>
                 </Container>
             </div>
         )

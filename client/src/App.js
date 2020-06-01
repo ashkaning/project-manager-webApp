@@ -6,6 +6,7 @@ import TopNav from "./components/TopNav";
 import Role from "./pages/Role";
 import Service from "./pages/Service";
 import Users from "./pages/User";
+import Clients from "./pages/Clients";
 import NoMatch from "./pages/NoMatch";
 
 
@@ -21,6 +22,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/roles" component={Role} />
           <Route exact path="/users" component={Users} />
+          <Route exact path="/clients" component={Clients} />
           <Route exact path="/services" component={Service} />
           <Route component={NoMatch} />
         </Switch>

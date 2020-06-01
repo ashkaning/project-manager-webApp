@@ -1,7 +1,10 @@
 module.exports = function (sequelize, DataTypes) {
     var Client_Service = sequelize.define("Client_Service", {
         description: DataTypes.STRING,
-        status: DataTypes.STRING,
+        status: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
         employeeId: DataTypes.INTEGER
     });
 

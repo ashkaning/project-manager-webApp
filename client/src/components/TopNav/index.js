@@ -13,10 +13,10 @@ function TopNav(){
               <a className="nav-link" href="/roles">Departments/Roles</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/Services">Services</a>
+              <a className="nav-link" href="/services">Services</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/Clients">Clients</a>
+              <a className="nav-link" href="/clients">Clients</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/users">Login/Register</a>

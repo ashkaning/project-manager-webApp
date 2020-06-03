@@ -31,27 +31,30 @@ export default {
     saveNewService: function (service) {
         return axios.post("/api/service", service);
     },
-    deleteService: function(service){
-        return axios.delete("/api/service",service);
+    deleteService: function (service) {
+        return axios.delete("/api/service", service);
     },
-    getOneServiceInfo: function(service){
+    getOneServiceInfo: function (service) {
         return axios.post("/api/getOneService", service);
     },
-    updateOneService: function(service){
+    updateOneService: function (service) {
         return axios.put("/api/service", service);
     },
-    getAllCustomers:function(){
+    getAllCustomers: function () {
         return axios.get("/api/assignServicesAndAllCustomers");
     },
-    assignAllServiceToClient: function(service){
+    assignAllServiceToClient: function (service) {
         return axios.post("/api/assignServicesAndAllCustomers", service);
     },
-    getAllDeparments: function(){
+    getAllDeparments: function () {
         return axios.get("/api/getAllDeparments")
     },
     /* Services Customers */
-    getAllServiceCustomers: function(){
+    getAllServiceCustomers: function () {
         return axios.get("/api/serviceCustomer")
+    },
+    serviceClient: function (customerId) {
+        return axios.post("api/serviceCustomer", customerId)
     }
 
 }

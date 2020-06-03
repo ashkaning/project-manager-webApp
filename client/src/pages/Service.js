@@ -35,6 +35,7 @@ class Services extends Component {
         API.getAllServices()
             .then(resAllServices => {
                 this.setState({ allServices: resAllServices.data })
+                console.log(this.state.allServices)
             }).catch(err => toast.error("There is an error. Please contact administrator. (Get ALL Service)"))
     }
     /////////SAVE NNEW SERVICE API FUNCTION////////////////////

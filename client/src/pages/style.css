@@ -34,3 +34,18 @@ p,span{
 .darkBackgroundOnClick{
     background-color: rgba(0,0,0,0.7);
 }
+.notActive{
+    color: gray;
+    font-weight: bolder;
+}
+.completed{
+    color:green;
+    font-weight: bolder;
+}.canceled{
+    color: red;
+    font-weight: bolder;
+}
+.waiting{
+    color: blue;
+    font-weight: bolder;
+}

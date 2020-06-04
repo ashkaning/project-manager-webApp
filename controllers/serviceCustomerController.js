@@ -21,5 +21,11 @@ module.exports = {
             res.json(resModel)
         })
             .catch(err => res.status(422).json(err));
+    },
+    updateServiceStatus: function(req, res){
+        console.log(req.body)
+        /* db.Client_Service.update({
+
+        }) */
     }
 }

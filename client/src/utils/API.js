@@ -55,6 +55,10 @@ export default {
     },
     serviceClient: function (customerId) {
         return axios.post("api/serviceCustomer", customerId)
+    },
+    updateStatus: function(data){
+        console.log(data)
+        return axios.put("/api/serviceCustomer", data);
     }
 
 }

@@ -29,7 +29,7 @@ app.use(cors())
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-console.log(process.env.NODE_ENV)
+//console.log(process.env.NODE_ENV)
  
 const sessConfig = {
   secret: 'keyboard cat',
@@ -60,6 +60,6 @@ if (process.env.NODE_ENV === 'production') {
 
 database.sequelize.sync().then(function() {
   app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
+    //console.log("App listening on PORT " + PORT);
   });
 });

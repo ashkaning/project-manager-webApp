@@ -4,5 +4,6 @@ const serviceCustomerController = require("../../controllers/serviceCustomerCont
 router.route("/")
     .get(serviceCustomerController.getAllCustomers)
     .post(serviceCustomerController.getServicesCustomer)
+    .put(serviceCustomerController.updateServiceStatus)
 
     module.exports = router;

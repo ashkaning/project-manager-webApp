@@ -61,7 +61,7 @@ module.exports = {
                 clientId: req.body.customerId,
                 employeeId: req.body.DeparmentId
             }).then(resModel => {
-                res.status(200)
+                console.log(resModel)
             }).catch(err => res.status(422).json(err));
         }
     }

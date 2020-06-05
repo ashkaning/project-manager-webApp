@@ -6,6 +6,10 @@ p,span{
 }
 #popupUpdate{
     display: none;
+    height: auto;
+    width: 100%;
+    position: absolute;
+    background-color: rgba(0,0,0,0.7);
 } 
 .topSpacing{
     margin-top: 20px;
@@ -27,7 +31,6 @@ p,span{
 }
 .editFormCustomClass{
     display: block;
-    position: absolute;
     z-index: 999;
     margin: 0 auto;
 }

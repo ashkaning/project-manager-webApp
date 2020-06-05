@@ -4,8 +4,8 @@ import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
 import "./style.css";
-import { Table, Button, Form, Col } from 'react-bootstrap';
-
+import { Table, Button, Form, Col, Modal } from 'react-bootstrap';
+import Moment from 'react-moment';
 class Users extends Component {
     state = {
         fName: '',
@@ -23,7 +23,8 @@ class Users extends Component {
         password: '',
         role: '',
         allRoles: [],
-        allUsers: []
+        allUsers: [],
+        getOneUser: []
     }
     /*     constructor(props) {
             super(props);
@@ -48,14 +49,17 @@ class Users extends Component {
             description: this.state.description,
             logo: '',
             password: this.state.password,
-            roleId: this.state.role
+            roleId: this.state.role,
+            userId: ''
         }).then(resSucceed => {
             toast.success("User created successfully")
+            this.resetAll()
         }).catch(err => toast.error("There is an error. Please contact adminstrator"))
     }
     componentDidMount() {
         this.getAllRoles();
         this.getAllUsers();
+        this.resetAll()
     }
     //////////////GET ALL USERS INFO///////////////
     getAllUsers = () => {
@@ -71,6 +75,21 @@ class Users extends Component {
                 this.setState({ allRoles: resAllRoles.data });
             }).catch(err => toast.error("There is an error. Please contact administrator"))
     }
+    //////////////////get one row to update//////////////
+    getOneUser = (userId) => {
+        API.getOneUser({ id: userId })
+            .then(resUserId => {
+                this.setState({ getOneUser: resUserId.data })
+                toast.success("update selected user")
+                this.closeButton()
+            }).catch(err => toast.error("There is an error. Please contact administrator. (getting one user)"))
+    }
+    /////////////////UPDATE ONE USER////////////
+    updateOne = (id) => {
+
+        this.setState({ fName: this.state.fName })
+        console.log(this.state)
+    }
     //////////////////////////////////////////
     handleInputChange = event => {
         const { name, value } = event.target;
@@ -78,6 +97,37 @@ class Users extends Component {
             [name]: value
         });
     };
+    closeButton = () => {
+        var x = document.getElementById("popupUpdate");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+
+        } else {
+            x.style.display = "none";
+        }
+
+    }
+    resetAll = () => {
+        this.setState({
+            fName: '',
+            lName: '',
+            address: '',
+            addressUnit: '',
+            addressCity: '',
+            addressState: '',
+            addressZip: '',
+            email: '',
+            phone: '',
+            companyName: '',
+            description: '',
+            logo: '',
+            password: '',
+            role: '',
+            allRoles: [],
+            allUsers: [],
+            getOneUser: []
+        })
+    }
     ///////////////////////////////////////////
     render() {
         return (
@@ -173,9 +223,106 @@ class Users extends Component {
                         <Col size="md-12">
                             <h2 className="text-center">
                                 User Lists
-                        </h2>
+                            </h2>
                         </Col>
                     </Row>
+                    {/* update popup */}
+                    <div id="popupUpdate">
+                        <Modal.Dialog className="editFormCustomClass" >
+                            <Modal.Header closeButton onClick={() => this.closeButton()}>
+                                <Modal.Title>Update selected user</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <p>Please update the information below and save.</p>
+                                <Form.Row>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>First Name</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="fName" type="text" defaultValue={this.state.getOneUser.fName} />
+                                    </Form.Group>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Last Name</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="lName" type="text" placeholder={this.state.getOneUser.lName} />
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Email</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="email" type="text" placeholder={this.state.getOneUser.email} />
+                                    </Form.Group>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Phone</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="phone" type="text" placeholder={this.state.getOneUser.phone} />
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Company Name</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="companyName" type="text" placeholder={this.state.getOneUser.companyName} />
+                                    </Form.Group>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Address</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="phone" type="text" placeholder={this.state.getOneUser.address} />
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Address Unit</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="addressUnit" type="text" placeholder={this.state.getOneUser.addressUnit} />
+                                    </Form.Group>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>City</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="addressCity" type="text" placeholder={this.state.getOneUser.addressCity} />
+                                    </Form.Group>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>State</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="addressState" type="text" placeholder={this.state.getOneUser.addressState} />
+                                    </Form.Group>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Zip</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="addressZip" type="text" placeholder={this.state.getOneUser.addressZip} />
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>Logo</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="logo" type="text" placeholder={this.state.getOneUser.logo} />
+                                    </Form.Group>
+                                    <Form.Group as={Col}>
+                                        <Form.Label>New Password</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="password" type="password" placeholder={this.state.getOneUser.password} />
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId="formGridRole">
+                                        <Form.Label>Role</Form.Label>
+
+                                        {this.state.allRoles.length ? (
+                                            <Form.Control onChange={this.handleInputChange} as="select" name="role">
+                                                <option>Choose...</option>
+                                                {this.state.allRoles.map(singleRole => (
+                                                    <option value={singleRole.id}>{singleRole.name}</option>
+                                                ))}
+                                            </Form.Control>
+
+                                        ) : (<h3></h3>)}
+                                    </Form.Group>
+
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                                        <Form.Label>Comment or Description</Form.Label>
+                                        <Form.Control onChange={this.handleInputChange} name="description" as="textarea" rows="3" />
+                                    </Form.Group>
+                                </Form.Row>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Row>
+                                    <Col size="md-12">
+                                        <Button onClick={() => this.updateOne(this.state.getOneUser.id)} variant="primary">Save changes</Button>
+                                    </Col>
+                                </Row>
+                            </Modal.Footer>
+                        </Modal.Dialog>
+                    </div>
+                    {/* SHOWING USERS */}
                     <Table striped bordered hover>
                         <thead>
                             <tr>
@@ -196,9 +343,7 @@ class Users extends Component {
                         {this.state.allUsers.length ? (
                             <tbody>
                                 {this.state.allUsers.map(singleUser => (
-
                                     <tr key={singleUser.id}>
-
                                         <td name="roleId">{singleUser.id}</td>
                                         <td>{singleUser.fName} {singleUser.lName}</td>
                                         <td>{singleUser.email} </td>
@@ -206,19 +351,16 @@ class Users extends Component {
                                         <td>{singleUser.address}, {singleUser.addressUnit}, {singleUser.addressCity}, {singleUser.addressState} {singleUser.addressZip}</td>
                                         <td>{singleUser.companyName}</td>
                                         <td>{singleUser.Role.name}</td>
-                                        <td>{singleUser.createdAt}</td>
-                                        <td>{singleUser.updatedAt}</td>
+                                        <td><Moment format="MM/DD/YYYY HH:mm" date={singleUser.createdAt} /></td>
+                                        <td><Moment format="MM/DD/YYYY HH:mm" date={singleUser.updatedAt} /></td>
                                         <td>{singleUser.description}</td>
-                                        <td className="text-center"><Button onClick={() => this.getOneRole(singleUser.id)} variant="primary">Edit</Button></td>
-                                        <td className="text-center"><Button onClick={() => this.deleteRole(singleUser.id)} variant="danger">Delete</Button>
+                                        <td className="text-center"><Button onClick={() => this.getOneUser(singleUser.id)} variant="primary">Edit</Button></td>
+                                        <td className="text-center"><Button onClick={() => this.deleteUser(singleUser.id)} variant="danger">Delete</Button>
                                         </td>
-
                                     </tr>
-
                                 ))}
                             </tbody>
                         ) : (<h3>Loading...</h3>)}
-
                     </Table>
                 </Container>
             </div>

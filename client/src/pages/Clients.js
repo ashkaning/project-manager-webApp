@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
 import "./style.css";
 import { Modal, Button, Form, Col } from 'react-bootstrap';
-import Select from "react-select";
 
 class Clients extends Component {
     state = {
@@ -19,19 +18,38 @@ class Clients extends Component {
             { value: "2", label: "Completed" },
             { value: "3", label: "Canceled" }
         ],
-        updateStatus: ''
+        updateStatus: '',
+        updateEmployee:'',
+        getOneEmployee:'',
+        getAllEmployees: []
 
     }
 
     componentDidMount() {
-        this.getAllServiceCustomers()
+        this.getAllServiceCustomers();
+        this.getAllDeparments();
+    }
+    //////////////////GET ONE EMPLOYEE//////////
+    getEmployee = (id) =>{
+        API.getOneUser({id: id})
+        .then(resGetEmployee=>{
+            this.setState()
+            return (<option>{resGetEmployee.data.fName}</option>)
+        })
+    }
+    ///////////////GET ALL EMPLOYEES///////////
+    getAllDeparments = () => {
+        API.getAllDeparments({})
+            .then(resGetAllDeparments => {
+                this.setState({ getAllEmployees: resGetAllDeparments })
+            }).catch(err => toast.error("There is an error. Please contact administrator (getting all departments)"))
     }
     //////////////Get All Customers////////////////
     getAllServiceCustomers = () => {
         API.getAllServiceCustomers()
             .then(resCustomer => {
                 this.setState({ allCustomers: resCustomer.data })
-
+                console.log(this.state.allCustomers)
             }).catch(err => toast.error("There is an error. Please contact administrator (Getting All Customers)"))
     }
     /////////////Get services for a selected client//////
@@ -56,7 +74,6 @@ class Clients extends Component {
             toast.error("Please select an update")
         }
         else {
-
             API.updateStatus({
                 id: evet,
                 content: this.state.updateStatus
@@ -65,6 +82,7 @@ class Clients extends Component {
     }
     //////////////////////////
     selectFunction = (selectedId) => {
+
         if (selectedId === 0) {
             return (<option className="notActive" value="0">Not Activate</option>)
         }
@@ -92,14 +110,27 @@ class Clients extends Component {
                     if (singleMenu.Service.subId === 0) {
                         return (
                             <li key={singleMenu.id}>{singleMenu.Service.serviceName}
-                                <Form.Control onChange={(evt) => this.updateStatus(evt, singleMenu.id)} placeholder={this.selectFunction(singleMenu.status)} as="select" name="updateStatus">
-                                    <option className="notActive" value="0">Not Activate</option>
-                                    <option className="waiting" value="1">Waiting on Client</option>
-                                    <option className="completed" value="2">Completed</option>
-                                    <option className="canceled" value="3">Canceled</option>
-                            ))}
+                                <Form>
+                                    <Form.Row>
+                                        <Form.Group as={Col}>
+                                            <Form.Label className="serviceTitle">Status</Form.Label>
+                                            <Form.Control onChange={(evt) => this.updateStatus(evt, singleMenu.id)} /* placeholder={this.selectFunction(singleMenu.status)} */ as="select" name="updateStatus">
+                                                {this.selectFunction(singleMenu.status)}
+                                                <option className="notActive" value="0">Not Activate</option>
+                                                <option className="waiting" value="1">Waiting on Client</option>
+                                                <option className="completed" value="2">Completed</option>
+                                                <option className="canceled" value="3">Canceled</option>
+                                            </Form.Control>
+                                        </Form.Group>
+                                        <Form.Group as={Col}>
+                                            <Form.Label className="serviceTitle">Assign Employee</Form.Label>
+                                            <Form.Control onChange={(evt) => this.updateEmployee(evt, singleMenu.employeeId)} /* placeholder={this.selectFunction(singleMenu.status)} */ as="select" name="updateEmployee">
+                                                {this.getEmployee(singleMenu.employeeId)}
 
-                        </Form.Control>
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Form.Row>
+                                </Form>
                                 {this.subMenuMain(singleMenu.ServiceId)}
                             </li>
                         )
@@ -116,25 +147,34 @@ class Clients extends Component {
             ParentsubMenu.map(singleParentsubMenu => (
                 <ul>
                     <li key={singleParentsubMenu.id}>{singleParentsubMenu.Service.serviceName}
-                        <Form.Control onChange={(evt) => this.updateStatus(evt, singleParentsubMenu.id)} as="select" name="updateStatus">
-                            <option className="notActive" value="0">Not Activate</option>
-                            <option className="waiting" value="1">Waiting on Client</option>
-                            <option className="completed" value="2">Completed</option>
-                            <option className="canceled" value="3">Canceled</option>
-                            ))}
+                        <Form>
+                            <Form.Row>
+                                <Form.Group as={Col}>
+                                    <Form.Control onChange={(evt) => this.updateStatus(evt, singleParentsubMenu.id)} as="select" name="updateStatus">
+                                        {this.selectFunction(singleParentsubMenu.status)}
+                                        <option className="notActive" value="0">Not Activate</option>
+                                        <option className="waiting" value="1">Waiting on Client</option>
+                                        <option className="completed" value="2">Completed</option>
+                                        <option className="canceled" value="3">Canceled</option>
+                                    </Form.Control>
 
-                        </Form.Control>
-                        {/*  <select onChange={(evt) => this.updateStatus(evt, singleParentsubMenu.id)} value="" name="updateStatus" placeholder={this.selectFunction(singleParentsubMenu.status)}>
-                            <option value="0">Not Activate</option>
-                            <option value="1">Waiting on Client</option>
-                            <option value="2">Completed</option>
-                            <option value="3">Canceled</option>
-                        </select> */}
+                                </Form.Group>
+                                <Form.Group as={Col}>
+                                    <Form.Label className="serviceTitle">Assign Employee</Form.Label>
+                                    <Form.Control onChange={(evt) => this.updateEmployee(evt, singleParentsubMenu.id)} /* placeholder={this.selectFunction(singleMenu.status)} */ as="select" name="updateEmployee">
+                                        {this.selectFunction(singleParentsubMenu.status)}
+                                        <option className="notActive" value="0">Not Activate</option>
+                                        <option className="waiting" value="1">Waiting on Client</option>
+                                        <option className="completed" value="2">Completed</option>
+                                        <option className="canceled" value="3">Canceled</option>
+                                    </Form.Control>
+                                </Form.Group>
+                            </Form.Row>
+                        </Form>
                         {this.subMenuMain(singleParentsubMenu.ServiceId)}
                     </li>
-                </ul>
+                </ul >
             ))
-
         )
     }
     ////////////////////////////
@@ -171,11 +211,9 @@ class Clients extends Component {
                 <Row>
                     <Col size="md-12">
                         <h2 className="text-center">Here are the services</h2>
-                        {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p>loading</p>)}
+                        {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p>Please choose a client to see the services</p>)}
 
-                        <Button onClick={this.updateStatus} variant="primary" type="submit">
-                            Update
-                        </Button>
+
                     </Col>
                 </Row>
             </Container>

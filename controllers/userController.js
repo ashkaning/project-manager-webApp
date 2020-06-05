@@ -47,5 +47,16 @@ module.exports = {
             .then(resModel => {
                 res.json(resModel)
             }).catch(err => res.status(422).json(err));
+    },
+    getOne: function (req, res) {
+        db.Users.findOne({
+            where: { id: req.body.id },
+            include: [{ model: db.Roles, require: true }],
+            attributes: { exclude: ["password"] }
+        })
+            .then(resOneRole => {
+                res.json(resOneRole)
+            })
+            .catch(err => res.status(422).json(err));
     }
 }

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ColLight } from "../components/Grid";
 export default {
     /* Roles/Deparments API */
     NewRol: function (role) {
@@ -23,6 +22,9 @@ export default {
     },
     getAllUsers: function () {
         return axios.get("/api/user");
+    },
+    getOneUser: function(user){
+        return axios.post("/api/getOneUser",user)
     },
     /* Services API */
     getAllServices: function () {

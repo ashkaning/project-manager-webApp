@@ -37,9 +37,9 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         phone:{
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             validate: {
-                len: [10]
+                len: [11]
             }
         },
         companyName: {

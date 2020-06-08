@@ -5,9 +5,14 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        employeeId: DataTypes.INTEGER
+        employeeId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'Users',
+                key: 'id'
+            }
+        }
     });
-
     Client_Service.associate = function (models) {
         Client_Service.belongsTo(
             models.Users, {

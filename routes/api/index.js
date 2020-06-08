@@ -12,6 +12,7 @@ const assignServicesAndAllCustomers = require("./assignServicesAndAllCustomers")
 const getAllDeparments = require("./getAllDeparments");
 /* Service Customer */
 const serviceCustomer = require("./serviceCustomer")
+const serviceCustomerAssignedEmployeeUpdate = require("./serviceCustomerAssignedEmployeeUpdate")
 ////////////////////////////////////
 /* Rol/Department */
 router.use("/role", role);
@@ -26,5 +27,6 @@ router.use("/assignServicesAndAllCustomers", assignServicesAndAllCustomers);
 router.use("/getAllDeparments", getAllDeparments);
 /* Service Customer */
 router.use("/serviceCustomer", serviceCustomer);
+router.use("/serviceCustomerAssignedEmployeeUpdate", serviceCustomerAssignedEmployeeUpdate)
 
 module.exports = router;

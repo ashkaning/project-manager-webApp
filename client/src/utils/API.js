@@ -23,8 +23,8 @@ export default {
     getAllUsers: function () {
         return axios.get("/api/user");
     },
-    getOneUser: function(user){
-        return axios.post("/api/getOneUser",user)
+    getOneUser: function (user) {
+        return axios.post("/api/getOneUser", user)
     },
     /* Services API */
     getAllServices: function () {
@@ -58,9 +58,11 @@ export default {
     serviceClient: function (customerId) {
         return axios.post("api/serviceCustomer", customerId)
     },
-    updateStatus: function(data){
-        console.log(data)
+    updateStatus: function (data) {
         return axios.put("/api/serviceCustomer", data);
+    },
+    updateEmployee: function (data) {
+        return axios.put("/api/serviceCustomerAssignedEmployeeUpdate", data)
     }
 
 }

@@ -19,8 +19,8 @@ class Clients extends Component {
             { value: "3", label: "Canceled" }
         ],
         updateStatus: '',
-        updateEmployee:'',
-        getOneEmployee:'',
+        updateEmployee: '',
+        getOneEmployee: [],
         getAllEmployees: []
 
     }
@@ -29,28 +29,58 @@ class Clients extends Component {
         this.getAllServiceCustomers();
         this.getAllDeparments();
     }
-    //////////////////GET ONE EMPLOYEE//////////
-    getEmployee = (id) =>{
-        API.getOneUser({id: id})
-        .then(resGetEmployee=>{
-            this.setState()
-            return (<option>{resGetEmployee.data.fName}</option>)
-        })
-    }
+
     ///////////////GET ALL EMPLOYEES///////////
     getAllDeparments = () => {
         API.getAllDeparments({})
             .then(resGetAllDeparments => {
-                this.setState({ getAllEmployees: resGetAllDeparments })
+                this.setState({ getAllEmployees: resGetAllDeparments.data })
             }).catch(err => toast.error("There is an error. Please contact administrator (getting all departments)"))
+    }
+    //////////////////GET ONE EMPLOYEE//////////
+    getEmployee = (selectedId, serviceId) => {
+        let selctedEmployee = (this.state.getAllEmployees.filter(obj => obj.id === selectedId))
+        return (
+
+            selctedEmployee.map(singleSelctedEmployee => (
+                <Form.Control onChange={(evt) => this.updateAsseignedEmoloyee(evt, serviceId)} as="select" name="updateEmployee">
+                    <option value={singleSelctedEmployee.id}>{singleSelctedEmployee.fName} {singleSelctedEmployee.lName} - {singleSelctedEmployee.Role.name}</option>
+                    {this.getAllEmployeesoptions(selectedId)}
+                </Form.Control>
+            )
+            ))
+    }
+    getAllEmployeesoptions = (selectedId) => {
+        let selctedEmployee = (this.state.getAllEmployees.filter(obj => obj.id !== selectedId))
+        return (
+            selctedEmployee.map(singleEmployee => (
+                <option value={singleEmployee.id}>{singleEmployee.fName} {singleEmployee.lName} - {singleEmployee.Role.name}</option>
+            ))
+        )
+    }
+    updateAsseignedEmoloyee = (event, serviceId) => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        }, () => this.updateAsseignedEmoloyeeAPI(serviceId))
+    }
+    updateAsseignedEmoloyeeAPI = (serviceId) => {
+        API.updateEmployee({
+            id: serviceId,
+            employeeId: this.state.updateEmployee
+        })
+            .then(updatedResult => {
+                toast.success("Assinged Employeed updated successfully!")
+            }).catch(err => toast.error("There is an error. Please contact administrator (updating assigned employee)"))
     }
     //////////////Get All Customers////////////////
     getAllServiceCustomers = () => {
         API.getAllServiceCustomers()
             .then(resCustomer => {
                 this.setState({ allCustomers: resCustomer.data })
-                console.log(this.state.allCustomers)
-            }).catch(err => toast.error("There is an error. Please contact administrator (Getting All Customers)"))
+            }).catch(err => {
+                toast.error("There is an error. Please contact administrator (Getting All Customers)")
+            })
     }
     /////////////Get services for a selected client//////
     serviceClient = () => {
@@ -58,7 +88,6 @@ class Clients extends Component {
         API.serviceClient({ clientId: this.state.customerId })
             .then(resServiceClient => {
                 this.setState({ allServicesClient: resServiceClient.data });
-
             }).catch(err => toast.error("There is an error. Please contact administrator (Getting Services for the selected service)"));
     }
     ////////////////UPDATE STATUS///////////////
@@ -77,7 +106,9 @@ class Clients extends Component {
             API.updateStatus({
                 id: evet,
                 content: this.state.updateStatus
-            })
+            }).then(result => {
+                toast.success("The Status updated successfully")
+            }).catch(err => toast.error("There is an error. Please contact administrator (Updating status)"));
         }
     }
     //////////////////////////
@@ -123,11 +154,10 @@ class Clients extends Component {
                                             </Form.Control>
                                         </Form.Group>
                                         <Form.Group as={Col}>
-                                            <Form.Label className="serviceTitle">Assign Employee</Form.Label>
-                                            <Form.Control onChange={(evt) => this.updateEmployee(evt, singleMenu.employeeId)} /* placeholder={this.selectFunction(singleMenu.status)} */ as="select" name="updateEmployee">
-                                                {this.getEmployee(singleMenu.employeeId)}
+                                            <Form.Label className="serviceTitle">Assigned Employee</Form.Label>
 
-                                            </Form.Control>
+                                            {this.getEmployee(singleMenu.employeeId, singleMenu.id)}
+
                                         </Form.Group>
                                     </Form.Row>
                                 </Form>
@@ -160,14 +190,8 @@ class Clients extends Component {
 
                                 </Form.Group>
                                 <Form.Group as={Col}>
-                                    <Form.Label className="serviceTitle">Assign Employee</Form.Label>
-                                    <Form.Control onChange={(evt) => this.updateEmployee(evt, singleParentsubMenu.id)} /* placeholder={this.selectFunction(singleMenu.status)} */ as="select" name="updateEmployee">
-                                        {this.selectFunction(singleParentsubMenu.status)}
-                                        <option className="notActive" value="0">Not Activate</option>
-                                        <option className="waiting" value="1">Waiting on Client</option>
-                                        <option className="completed" value="2">Completed</option>
-                                        <option className="canceled" value="3">Canceled</option>
-                                    </Form.Control>
+                                    <Form.Label className="serviceTitle">Assigned Employee</Form.Label>
+                                    {this.getEmployee(singleParentsubMenu.employeeId, singleParentsubMenu.id)}
                                 </Form.Group>
                             </Form.Row>
                         </Form>

@@ -42,7 +42,8 @@ module.exports = {
                     [Op.ne]: 13
                 }
             },
-            attributes: { exclude: ["password"] }
+            attributes: { exclude: ["password"] },
+            include: [{ model: db.Roles, require: true }]
         })
             .then(resModel => {
                 res.json(resModel)

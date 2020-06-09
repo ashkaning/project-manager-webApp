@@ -17,6 +17,15 @@ export default {
         return axios.put("/api/role", role);
     },
     /* Users API */
+    loginSession: function () {
+        return axios.get("/api/login")
+    },
+    getSession: function () {
+        return axios.get("/api/session")
+    },
+    usersLogin: function (authtData) {
+        return axios.post("/api/login", authtData)
+    },
     saveNewUser: function (user) {
         return axios.post("/api/user", user);
     },

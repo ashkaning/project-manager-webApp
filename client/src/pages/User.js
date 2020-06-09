@@ -22,6 +22,7 @@ class Users extends Component {
         logo: '',
         password: '',
         role: '',
+        AuthorId: 0,
         allRoles: [],
         allUsers: [],
         getOneUser: []
@@ -59,7 +60,21 @@ class Users extends Component {
     componentDidMount() {
         this.getAllRoles();
         this.getAllUsers();
-        this.resetAll()
+        this.resetAll();
+        this.checkSession();
+    }
+    checkSession = () => {
+        API.getSession()
+            .then((res) => {
+                if (!(res.data.isUserLoggin)) {
+                    this.props.history.push('/', { some: 'state' })
+                } else {
+                    this.setState({
+                        userId: res.data.authorId
+                    })
+                }
+            })
+            .catch(err => console.log(err))
     }
     //////////////GET ALL USERS INFO///////////////
     getAllUsers = () => {

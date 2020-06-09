@@ -5,6 +5,8 @@ const getOneRole = require("./getOneRole");
 /* Users */
 const user = require("./user");
 const oneUser = require("./getOneUser")
+const login = require("./login")
+const session = require("./session")
 /* Services */
 const getOneService = require("./getOneService");
 const service = require("./service");
@@ -18,6 +20,8 @@ const serviceCustomerAssignedEmployeeUpdate = require("./serviceCustomerAssigned
 router.use("/role", role);
 router.use("/getOneRole", getOneRole);
 /* Users */
+router.use("/login", login)
+router.use("/session", session)
 router.use("/user", user);
 router.use("/getOneUser", oneUser);
 /* Services */

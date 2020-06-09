@@ -1,29 +1,43 @@
-const { Op } = require("sequelize");
 const db = require("../models")
+const { Op } = require("sequelize");
+const bcrypt = require('bcrypt');
 
 module.exports = {
     create: function (req, res) {
-        db.Users
-            .create({
-                fName: req.body.fName,
-                lName: req.body.lName,
-                email: req.body.email,
-                phone: req.body.phone,
-                password: req.body.password,
-                companyName: req.body.companyName,
-                address: req.body.address,
-                addressUnit: req.body.addressUnit,
-                addressCity: req.body.addressCity,
-                addressState: req.body.addressState,
-                addressZip: req.body.addressZip,
-                logo: req.body.logo,
-                description: req.body.description,
-                RoleId: req.body.roleId
+        db.Users.findOne({ where: { email: req.body.email } })
+            .then(resultOne => {
+                if (resultOne === null) {
+                    bcrypt.genSalt()
+                        .then(salt => {
+                            bcrypt.hash(req.body.password, salt, function (err, hash) {
+                                db.Users
+                                    .create({
+                                        fName: req.body.fName,
+                                        lName: req.body.lName,
+                                        email: req.body.email,
+                                        phone: req.body.phone,
+                                        password: hash,
+                                        companyName: req.body.companyName,
+                                        address: req.body.address,
+                                        addressUnit: req.body.addressUnit,
+                                        addressCity: req.body.addressCity,
+                                        addressState: req.body.addressState,
+                                        addressZip: req.body.addressZip,
+                                        logo: req.body.logo,
+                                        description: req.body.description,
+                                        RoleId: req.body.roleId
+                                    })
+                                    .then((dbModel) => {
+                                        res.json(dbModel);
+                                    })
+                                    .catch(err => res.status(422).json(err));
+                            })
+                        }) .catch(err => res.status(422).json(err));
+                }
+                else{
+                   res.status(422);
+                }
             })
-            .then((dbModel) => {
-                res.json(dbModel);
-            })
-            .catch(err => res.status(422).json(err));
     },
     getAll: function (req, res) {
         db.Users.findAll({

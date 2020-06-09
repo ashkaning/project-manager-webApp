@@ -19,7 +19,7 @@ function TopNav(){
               <a className="nav-link" href="/clients">Clients</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/users">Login/Register</a>
+              <a className="nav-link" href="/users">Users</a>
             </li>
           </ul>
         </div>

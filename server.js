@@ -10,12 +10,12 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 /* const GitHubStrategy = require("passport-github2").Strategy; */
-//const auth = require("./controllers/loginController");
+const auth = require("./controllers/loginController");
 
 app.use(cors())
 
 
-// passport.use(new LocalStrategy(auth.verify));
+ passport.use(new LocalStrategy(auth.verify));
 /*passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -24,12 +24,11 @@ app.use(cors())
   auth.github
 )); */
 
-//passport.serializeUser(auth.serializeUser);
-//passport.deserializeUser(auth.deserializeUser);
+passport.serializeUser(auth.serializeUser);
+passport.deserializeUser(auth.deserializeUser);
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-//console.log(process.env.NODE_ENV)
  
 const sessConfig = {
   secret: 'keyboard cat',

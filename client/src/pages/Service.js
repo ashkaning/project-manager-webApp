@@ -9,6 +9,7 @@ import { Modal, Button, Form, Col } from 'react-bootstrap';
 class Services extends Component {
 
     state = {
+        userId: null,
         serviceName: '',
         serviceDescription: '',
         subId: '',
@@ -26,9 +27,24 @@ class Services extends Component {
         servicesToCustomer: []
     }
     componentDidMount() {
+        this.checkSession();
         this.getAllServices();
         this.getAllCustomers();
         this.getAllDeparments();
+    }
+    checkSession = () => {
+        API.getSession()
+            .then((res) => {
+                if (!(res.data.isUserLoggin)) {
+                    this.setState({ userId: null })
+                    this.props.history.push('/', { some: 'state' })
+                } else {
+                    this.setState({
+                        userId: res.data.userId
+                    })
+                }
+            })
+            .catch(err => console.log(err))
     }
     //////////////////////////
     getAllServices = () => {

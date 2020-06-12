@@ -1,5 +1,9 @@
 import axios from "axios";
 export default {
+    /* MENU */
+    logOut: function(){
+        return axios.get("/api/logOut")
+    },
     /* Roles/Deparments API */
     NewRol: function (role) {
         return axios.post("/api/role", role);

@@ -9,6 +9,7 @@ import { Table, Button, Modal } from 'react-bootstrap';
 
 class Role extends Component {
     state = {
+        userId: null,
         roleName: "",
         updateRoleName: "",
         updateRoleDesc: ""
@@ -24,9 +25,23 @@ class Role extends Component {
     }
 
     componentDidMount() {
+        this.checkSession();
         this.getAllRoles();
     }
-
+    checkSession = () => {
+        API.getSession()
+            .then((res) => {
+                if (!(res.data.isUserLoggin)) {
+                    this.setState({ userId: null })
+                    this.props.history.push('/', { some: 'state' })
+                } else {
+                    this.setState({
+                        userId: res.data.userId
+                    })
+                }
+            })
+            .catch(err => console.log(err))
+    }
     /////////////////////Get all info from Roles db////////////////////
     getAllRoles = () => {
         API.getAllRoles()

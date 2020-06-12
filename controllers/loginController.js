@@ -51,6 +51,7 @@ module.exports = {
             res.json(data)
         } else {
             let data = {
+                userId: req.session.userId,
                 isUserLoggin: false,
                 isSuccess: "No"
             }
@@ -60,15 +61,19 @@ module.exports = {
     checkSession: (req, res) => {
         if (req.session.isUserLoggin === false) {
             let data = {
+                userId: req.session.userId,
                 isSuccess: "No"
             }
             return res.json(data)
         }
         let data = {
-            authorId: req.session.authorId,
+            userId: req.session.userId,
             isUserLoggin: req.session.isUserLoggin
         }
         res.json(data)
-
+    },
+    logout: (req, res) => {
+        req.session.destroy()
+        res.status(200).json()
     }
 }

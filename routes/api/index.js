@@ -1,4 +1,6 @@
 const router = require("express").Router();
+/* MENU */
+const log = require("./log")
 /* Rol/Department */
 const role = require("./role");
 const getOneRole = require("./getOneRole");
@@ -16,6 +18,8 @@ const getAllDeparments = require("./getAllDeparments");
 const serviceCustomer = require("./serviceCustomer")
 const serviceCustomerAssignedEmployeeUpdate = require("./serviceCustomerAssignedEmployeeUpdate")
 ////////////////////////////////////
+/* MENU */
+router.use("/logOut", log)
 /* Rol/Department */
 router.use("/role", role);
 router.use("/getOneRole", getOneRole);

@@ -6,6 +6,7 @@ import { Row, Container } from "../components/Grid";
 import "./style.css";
 import { Table, Button, Form, Col, Modal } from 'react-bootstrap';
 import Moment from 'react-moment';
+
 class Users extends Component {
     state = {
         fName: '',
@@ -22,11 +23,12 @@ class Users extends Component {
         logo: '',
         password: '',
         role: '',
-        AuthorId: 0,
+        userId: 0,
         allRoles: [],
         allUsers: [],
         getOneUser: []
     }
+
     /*     constructor(props) {
             super(props);
             this.state = {
@@ -37,6 +39,7 @@ class Users extends Component {
     saveNewUser = (event) => {
         event.preventDefault()
         API.saveNewUser({
+            userId: null,
             fName: this.state.fName,
             lName: this.state.lName,
             address: this.state.address,
@@ -51,26 +54,27 @@ class Users extends Component {
             logo: '',
             password: this.state.password,
             roleId: this.state.role,
-            userId: ''
         }).then(resSucceed => {
             toast.success("User created successfully")
             this.resetAll()
         }).catch(err => toast.error("There is an error. Please contact adminstrator"))
     }
     componentDidMount() {
+        this.checkSession();
         this.getAllRoles();
         this.getAllUsers();
         this.resetAll();
-        this.checkSession();
     }
+
     checkSession = () => {
         API.getSession()
             .then((res) => {
                 if (!(res.data.isUserLoggin)) {
+                    this.setState({ userId: null })
                     this.props.history.push('/', { some: 'state' })
                 } else {
                     this.setState({
-                        userId: res.data.authorId
+                        userId: res.data.userId
                     })
                 }
             })
@@ -146,6 +150,7 @@ class Users extends Component {
     ///////////////////////////////////////////
     render() {
         return (
+            this.state.userId === null ? <p></p> :
             <div className="topSpacing">
                 <Container>
                     <Form>
@@ -228,7 +233,7 @@ class Users extends Component {
                         </Form.Group>
                         <Button onClick={this.saveNewUser} variant="primary" type="submit">
                             Submit
-                    </Button>
+                        </Button>
                     </Form>
                     {/* ///////////ُSHOW ALL THE USERS//////////// */}
                 </Container>
@@ -238,7 +243,7 @@ class Users extends Component {
                         <Col size="md-12">
                             <h2 className="text-center">
                                 User Lists
-                            </h2>
+                                </h2>
                         </Col>
                     </Row>
                     {/* update popup */}
@@ -375,12 +380,12 @@ class Users extends Component {
                                     </tr>
                                 ))}
                             </tbody>
-                        ) : (<h3>Loading...</h3>)}
+                        ) : (<h3></h3>)}
                     </Table>
                 </Container>
             </div>
         )
     }
-
 }
+//export default ReactDelayRender({delay: 200})(Users);
 export default Users;

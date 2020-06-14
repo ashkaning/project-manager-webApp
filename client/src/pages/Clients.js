@@ -225,35 +225,36 @@ class Clients extends Component {
     ///////////////////////////
     render() {
         return (
-            <Container>
-                <Row>
-                    <Col size="md-12">
-                        <h2 className="text-center"> Set up services to a client</h2>
-                        <Form.Row>
-                            <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
-                                <option>Choose...</option>
-                                {this.state.allCustomers.map(singleCustomer => (
-                                    <option key={singleCustomer.clientId} value={singleCustomer.clientId}>{singleCustomer.User.fName} - {singleCustomer.User.lName} - {singleCustomer.User.companyName}</option>
-                                ))}
-                            </Form.Control>
-                            <br /><br />
-                            <Button onClick={this.serviceClient} variant="primary" type="submit">
-                                Search
+            this.state.userId === null ? <p></p> :
+                <Container>
+                    <Row>
+                        <Col size="md-12">
+                            <h2 className="text-center"> Set up services to a client</h2>
+                            <Form.Row>
+                                <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
+                                    <option>Choose...</option>
+                                    {this.state.allCustomers.map(singleCustomer => (
+                                        <option key={singleCustomer.clientId} value={singleCustomer.clientId}>{singleCustomer.User.fName} - {singleCustomer.User.lName} - {singleCustomer.User.companyName}</option>
+                                    ))}
+                                </Form.Control>
+                                <br /><br />
+                                <Button onClick={this.serviceClient} variant="primary" type="submit">
+                                    Search
                             </Button>
-                        </Form.Row>
-                    </Col>
-                </Row>
-                {/* ///////////////////show services */}
-                <hr />
-                <Row>
-                    <Col size="md-12">
-                        <h2 className="text-center">Here are the services</h2>
-                        {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p>Please choose a client to see the services</p>)}
+                            </Form.Row>
+                        </Col>
+                    </Row>
+                    {/* ///////////////////show services */}
+                    <hr />
+                    <Row>
+                        <Col size="md-12">
+                            <h2 className="text-center">Here are the services</h2>
+                            {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p>Please choose a client to see the services</p>)}
 
 
-                    </Col>
-                </Row>
-            </Container>
+                        </Col>
+                    </Row>
+                </Container>
         )
     }
 }

@@ -38,7 +38,6 @@ class App extends Component {
     return (
       <Router>
         <div>
-          {this.state.userId === null ? '' : <TopNav />}
           <ToastContainer />
           <Switch>
             <Route exact path="/" component={Home} />

@@ -123,6 +123,7 @@ class Role extends Component {
     //////////////////////////////////////////
     render() {
         return (
+            this.state.userId === null ? <p></p> :
             <Container>
                 <Row>
                     <Col size="md-12">

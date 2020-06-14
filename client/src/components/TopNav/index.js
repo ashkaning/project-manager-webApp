@@ -1,9 +1,24 @@
-import React, { Component } from "react";
-import API from "../../utils/API";
+import React, { Children } from "react";
 import "./style.css";
-class TopNav extends Component {
+
+
+export function TopNav({params,children}) {
+  console.log(params)
+  return(
+    <p></p>
+  )
+}
+/* export function TopNav({userId}) {
+
+
+  return <p>hi</p>
+} */
+/* class TopNav extends Component {
   state = {
     userId: null
+  }
+  TopNav = userId => {
+    console.log(userId)
   }
   constructor(props) {
     super(props);
@@ -59,7 +74,7 @@ class TopNav extends Component {
             </li>
 
             <li className="nav-item">
-              {this.state.userId === null ? '': <a className="nav-link" href="" onClick={this.logOut}>Log Out</a>}
+              {this.state.userId === null ? '' : <a className="nav-link" href="" onClick={this.logOut}>Log Out</a>}
             </li>
           </ul>
         </div>
@@ -67,4 +82,4 @@ class TopNav extends Component {
     );
   }
 }
-export default TopNav;
+export default TopNav; */

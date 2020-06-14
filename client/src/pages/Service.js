@@ -194,9 +194,10 @@ class Services extends Component {
     }
     //////////////////////////////////////
     render() {
-
         return (
+            this.state.userId === null ? <p></p> :
             <div className="topSpacing">
+        
                 <Container>
                     {/* ///////////update selected service //////////////*/}
                     <Row>

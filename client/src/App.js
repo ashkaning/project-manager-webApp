@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import API from "./utils/API"
 /* COMPONENT */
-import TopNav from "./components/TopNav";
+import AdminMenu from "./components/AdminMenu";
 /* PAGES */
 import Home from "./pages/Home";
 import Role from "./pages/Role";

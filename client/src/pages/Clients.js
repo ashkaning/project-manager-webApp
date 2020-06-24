@@ -53,7 +53,7 @@ class Clients extends Component {
         let selctedEmployee = (this.state.getAllEmployees.filter(obj => obj.id !== selectedId))
         return (
             selctedEmployee.map(singleEmployee => (
-                <option value={singleEmployee.id}>{singleEmployee.fName} {singleEmployee.lName} - {singleEmployee.Role.name}</option>
+                <option key={singleEmployee.id} value={singleEmployee.id}>{singleEmployee.fName} {singleEmployee.lName} - {singleEmployee.Role.name}</option>
             ))
         )
     }

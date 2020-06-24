@@ -25,22 +25,7 @@ class Role extends Component {
     }
 
     componentDidMount() {
-        this.checkSession();
         this.getAllRoles();
-    }
-    checkSession = () => {
-        API.getSession()
-            .then((res) => {
-                if (!(res.data.isUserLoggin)) {
-                    this.setState({ userId: null })
-                    this.props.history.push('/', { some: 'state' })
-                } else {
-                    this.setState({
-                        userId: res.data.userId
-                    })
-                }
-            })
-            .catch(err => console.log(err))
     }
     /////////////////////Get all info from Roles db////////////////////
     getAllRoles = () => {
@@ -124,93 +109,93 @@ class Role extends Component {
     render() {
         return (
             this.state.userId === null ? <p></p> :
-            <Container>
-                <Row>
-                    <Col size="md-12">
-                        <h2 className="text-center">
-                            Department List
+                <Container>
+                    <Row>
+                        <Col size="md-12">
+                            <h2 className="text-center">
+                                Department List
                         </h2>
-                    </Col>
-                    <Col size="md-12">
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <td>ID</td>
-                                    <td>Role Name</td>
-                                    <td>Role Description</td>
-                                    <td>Edit</td>
-                                    <td>Delele</td>
-                                </tr>
-                            </thead>
-                            {this.state.allRoles.length ? (
-                                <tbody>
-                                    {this.state.allRoles.map(singleRole => (
+                        </Col>
+                        <Col size="md-12">
+                            <Table striped bordered hover>
+                                <thead>
+                                    <tr>
+                                        <td>ID</td>
+                                        <td>Role Name</td>
+                                        <td>Role Description</td>
+                                        <td>Edit</td>
+                                        <td>Delele</td>
+                                    </tr>
+                                </thead>
+                                {this.state.allRoles.length ? (
+                                    <tbody>
+                                        {this.state.allRoles.map(singleRole => (
 
-                                        <tr key={singleRole.id}>
+                                            <tr key={singleRole.id}>
 
-                                            <td name="roleId">{singleRole.id}</td>
-                                            <td>{singleRole.name}</td>
-                                            <td>{singleRole.description}</td>
-                                            <td className="text-center"><Button onClick={() => this.getOneRole(singleRole.id)} variant="primary">Edit</Button></td>
-                                            <td className="text-center"><Button onClick={() => this.deleteRole(singleRole.id)} variant="danger">Delete</Button>
-                                            </td>
+                                                <td name="roleId">{singleRole.id}</td>
+                                                <td>{singleRole.name}</td>
+                                                <td>{singleRole.description}</td>
+                                                <td className="text-center"><Button onClick={() => this.getOneRole(singleRole.id)} variant="primary">Edit</Button></td>
+                                                <td className="text-center"><Button onClick={() => this.deleteRole(singleRole.id)} variant="danger">Delete</Button>
+                                                </td>
 
-                                        </tr>
+                                            </tr>
 
-                                    ))}
-                                </tbody>
-                            ) : (<h3>Loading...</h3>)}
+                                        ))}
+                                    </tbody>
+                                ) : (<h3>Loading...</h3>)}
 
-                        </Table>
-                    </Col>
-                </Row>
-                <hr />
-                <Row>
-                    <Col size="md-6">
-                        <Modal.Dialog id="popupUpdate">
-                            <Modal.Header closeButton onClick={() => this.closeButton()}>
-                                <Modal.Title>Update Role</Modal.Title>
-                            </Modal.Header>
+                            </Table>
+                        </Col>
+                    </Row>
+                    <hr />
+                    <Row>
+                        <Col size="md-6">
+                            <Modal.Dialog id="popupUpdate">
+                                <Modal.Header closeButton onClick={() => this.closeButton()}>
+                                    <Modal.Title>Update Role</Modal.Title>
+                                </Modal.Header>
 
-                            <Modal.Body>
-                                <p>Please update the information below and save.</p>
-                            </Modal.Body>
+                                <Modal.Body>
+                                    <p>Please update the information below and save.</p>
+                                </Modal.Body>
 
-                            <Modal.Footer>
-                                <Row>
-                                    <Col size="md-6">
+                                <Modal.Footer>
+                                    <Row>
+                                        <Col size="md-6">
 
-                                        <input onChange={this.handleInputChange} name="updateRoleName" placeholder={this.state.getOneRole.name} />
-                                    </Col>
-                                    <Col size="md-6">
-                                        <input onChange={this.handleInputChange} name="updateRoleDesc" placeholder={this.state.getOneRole.description} />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col size="md-12">
-                                        <Button onClick={() => this.updateOneRole(this.state.getOneRole.id)} variant="primary">Save changes</Button>
-                                    </Col>
-                                </Row>
-                            </Modal.Footer>
-                        </Modal.Dialog>
-                    </Col>
-                    <Col size="md-6">
-                        <form>
-                            <div className="form-group">
-                                <input className="form-control" name="roleName" onChange={this.handleInputChange} value={this.state.roleName} placeholder="Marketing or Development (required)" />
-                                <textarea name="roleDesc" className="form-control" onChange={this.handleTextChange} ></textarea>
-                            </div>
-                            <FormBtn
-                                onClick={this.handleFormSubmit}
-                            >
-                                Post
+                                            <input onChange={this.handleInputChange} name="updateRoleName" placeholder={this.state.getOneRole.name} />
+                                        </Col>
+                                        <Col size="md-6">
+                                            <input onChange={this.handleInputChange} name="updateRoleDesc" placeholder={this.state.getOneRole.description} />
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col size="md-12">
+                                            <Button onClick={() => this.updateOneRole(this.state.getOneRole.id)} variant="primary">Save changes</Button>
+                                        </Col>
+                                    </Row>
+                                </Modal.Footer>
+                            </Modal.Dialog>
+                        </Col>
+                        <Col size="md-6">
+                            <form>
+                                <div className="form-group">
+                                    <input className="form-control" name="roleName" onChange={this.handleInputChange} value={this.state.roleName} placeholder="Marketing or Development (required)" />
+                                    <textarea name="roleDesc" className="form-control" onChange={this.handleTextChange} ></textarea>
+                                </div>
+                                <FormBtn
+                                    onClick={this.handleFormSubmit}
+                                >
+                                    Post
                         </FormBtn>
-                        </form>
-                    </Col>
+                            </form>
+                        </Col>
 
-                </Row>
+                    </Row>
 
-            </Container>
+                </Container>
 
         );
     }

@@ -5,5 +5,5 @@ const passport = require('passport');
 // Matches with "/api/new-post" 
 router.route("/")
   .post(loginController.verify)
-  .get(loginController.isLoggedInPage)
+  .get(loginController.checkSecurity)
 module.exports = router;

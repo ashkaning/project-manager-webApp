@@ -15,7 +15,7 @@ const auth = require("./controllers/loginController");
 app.use(cors())
 
 
- passport.use(new LocalStrategy(auth.verify));
+passport.use(new LocalStrategy(auth.verify));
 /*passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -29,15 +29,21 @@ passport.deserializeUser(auth.deserializeUser);
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
- 
+
 const sessConfig = {
+ /*  genid: function (req) {
+    return genuuid() // use UUIDs for session IDs
+  }, */
   secret: 'keyboard cat',
   store: new SequelizeStore({
-    db: database.sequelize
+    db: database.sequelize,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
   }),
   resave: false, // we support the touch method so per the express-session docs this should be set to false
   proxy: false,
-  cookie: { path: '/', httpOnly: true, maxAge: null }
+  cookie: { path: '/', httpOnly: true, maxAge: 600000 }
 }
 app.use(session(sessConfig));
 app.use(passport.initialize());
@@ -51,14 +57,14 @@ if (process.env.NODE_ENV === 'production') {
   // Express serve up index.html file if it doesn't recognize route
   const path = require('path');
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname,'./client/build/index.html'));
+    res.sendFile(path.join(__dirname, './client/build/index.html'));
   });
 }
 
 
 
-database.sequelize.sync().then(function() {
-  app.listen(PORT, function() {
+database.sequelize.sync().then(function () {
+  app.listen(PORT, function () {
     //console.log("App listening on PORT " + PORT);
   });
 });

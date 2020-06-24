@@ -6,18 +6,16 @@ module.exports = {
         db.Users.findOne({ where: { email: username.body.email } })
             .then(user => {
                 if (!user) {
-                    console.log('===========================')
-                    console.log(username.session)
                     return password.json(username.session)
                 }
                 return bcrypt.compare(username.body.password, user.password)
                     .then(match => {
-                        console.log(username.session)
                         if (match) {
                             username.session.userId = user.dataValues.id
                             username.session.isUserLoggin = true;
                             return password.json(username.session)
                         }
+                        username.session.isUserLoggin = false;
                         return password.json(username.session)
                     })
                     .catch(err => done(err));
@@ -28,52 +26,54 @@ module.exports = {
     deserializeUser: (id, done) => {
         db.Users.findById(id)
             .then(user => {
-                console.log(user)
                 done(null, user);
             })
             .catch(err => done(err));
     },
-    isLoggedIn: (req, res, next) => {
-        if (req.user) {
-            next();
-        } else {
-            res.redirect('/login');
-        }
-    },
-    isLoggedInPage: (req, res, next) => {
-
+    checkSecurity: (req, res, next) => {
         if (req.session.isUserLoggin) {
             let data = {
                 isUserLoggin: req.session.isUserLoggin,
-                isSuccess: 'Yes',
                 userId: req.session.userId
             }
+            console.log('TRUE')
+            console.log(req.session)
             res.json(data)
         } else {
             let data = {
-                userId: req.session.userId,
                 isUserLoggin: false,
-                isSuccess: "No"
+                userId: null
             }
+            console.log('FALSE')
+            console.log(req.session)
             res.json(data)
         }
-    },
-    checkSession: (req, res) => {
-        if (req.session.isUserLoggin === false) {
-            let data = {
-                userId: req.session.userId,
-                isSuccess: "No"
-            }
-            return res.json(data)
-        }
-        let data = {
-            userId: req.session.userId,
-            isUserLoggin: req.session.isUserLoggin
-        }
-        res.json(data)
     },
     logout: (req, res) => {
         req.session.destroy()
         res.status(200).json()
     }
+    /*   isLoggedIn: (req, res, next) => {
+          if (req.user) {
+              next();
+          } else {
+              res.redirect('/login');
+          }
+      },*/
+    /*  isLoggedInPage: (req, res, next) => { */
+    /*  checkSession: (req, res) => {
+         if (req.session.isUserLoggin === false) {
+             let data = {
+                 userId: req.session.userId,
+                 isSuccess: "No"
+             }
+             return res.json(data)
+         }
+         let data = {
+             userId: req.session.userId,
+             isUserLoggin: req.session.isUserLoggin
+         }
+         res.json(data)
+     }, */
+
 }

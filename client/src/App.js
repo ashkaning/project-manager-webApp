@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import API from "./utils/API"
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import API from "./utils/API";
 /* COMPONENT */
-import AdminMenu from "./components/AdminMenu";
+import { AdminMenu } from "./components/AdminMenu";
 /* PAGES */
 import Home from "./pages/Home";
 import Role from "./pages/Role";
@@ -17,18 +19,20 @@ class App extends Component {
     userId: null
   }
   componentDidMount() {
-    this.checkSession()
+    this.checkSecurity()
   }
-  checkSession = () => {
-    API.getSession()
+  checkSecurity = () => {
+    API.checkSecurity()
       .then((res) => {
-        if (res.data.isUserLoggin) {
-          this.setState({
-            userId: res.data.userId
-          })
+        if (res.data.isUserLoggin === true && res.data.userId !== null) {
+          toast.info("You are logged in... !");
+          this.props.history.push('/users', { some: 'state' })
+        }
+        else if (res.data.isUserLoggin === false && res.data.userId === null) {
+          toast.info("Please Try To Login... !");
         }
         else {
-          this.setState({ userId: null })
+          toast.info("mmm... Something is wrong. Please Try To again... !");
         }
       })
       .catch(err => console.log(err))
@@ -38,6 +42,7 @@ class App extends Component {
     return (
       <Router>
         <div>
+          <AdminMenu userId={this.state.userId} />
           <ToastContainer />
           <Switch>
             <Route exact path="/" component={Home} />

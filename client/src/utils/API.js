@@ -21,12 +21,12 @@ export default {
         return axios.put("/api/role", role);
     },
     /* Users API */
-    loginSession: function () {
+    checkSecurity: function () {
         return axios.get("/api/login")
     },
-    getSession: function () {
+    /* checkSecurity: function () {
         return axios.get("/api/session")
-    },
+    }, */
     usersLogin: function (authtData) {
         return axios.post("/api/login", authtData)
     },

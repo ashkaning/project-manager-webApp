@@ -27,31 +27,16 @@ class Services extends Component {
         servicesToCustomer: []
     }
     componentDidMount() {
-        this.checkSession();
         this.getAllServices();
         this.getAllCustomers();
         this.getAllDeparments();
     }
-    checkSession = () => {
-        API.getSession()
-            .then((res) => {
-                if (!(res.data.isUserLoggin)) {
-                    this.setState({ userId: null })
-                    this.props.history.push('/', { some: 'state' })
-                } else {
-                    this.setState({
-                        userId: res.data.userId
-                    })
-                }
-            })
-            .catch(err => console.log(err))
-    }
+    
     //////////////////////////
     getAllServices = () => {
         API.getAllServices()
             .then(resAllServices => {
                 this.setState({ allServices: resAllServices.data })
-                console.log(this.state.allServices)
             }).catch(err => toast.error("There is an error. Please contact administrator. (Get ALL Service)"))
     }
     /////////SAVE NNEW SERVICE API FUNCTION////////////////////
@@ -195,7 +180,6 @@ class Services extends Component {
     //////////////////////////////////////
     render() {
         return (
-            this.state.userId === null ? <p></p> :
             <div className="topSpacing">
         
                 <Container>

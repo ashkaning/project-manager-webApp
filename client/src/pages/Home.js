@@ -13,9 +13,9 @@ class Home extends Component {
         password: "",
         alertText: ""
     };
-    componentDidMount() {
-        this.loginSession();
-    }
+   /*  componentDidMount() {
+        this.checkSecurity();
+    } */
     handleInputChange = event => {
         const { name, value } = event.target;
         this.setState({
@@ -41,21 +41,22 @@ class Home extends Component {
             })
             .catch(err => console.log(err));
     }
-    loginSession = () => {
-        API.loginSession()
+   /*  checkSecurity = () => {
+        API.checkSecurity()
             .then((res) => {
-                console.log(res.data)
-                if (res.data.isSuccess === "Yes" && res.data.isUserLoggin === true) {
+                if (res.data.isUserLoggin === true && res.data.userId !== null) {
                     toast.info("You are logged in... !");
                     this.props.history.push('/users', { some: 'state' })
                 }
-                else if (res.data.isSuccess === "No" && res.data.isUserLoggin === false) {
+                else if (res.data.isUserLoggin === false && res.data.userId === null) {
                     toast.info("Please Try To Login... !");
                 }
-                else { }
+                else {
+                    toast.info("mmm... Something is wrong. Please Try To again... !");
+                }
             })
             .catch(err => console.log(err))
-    }
+    } */
     render() {
         return (
             <Container fluid>

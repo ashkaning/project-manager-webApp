@@ -3,7 +3,6 @@ import API from "../utils/API";
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
-import { AdminMenu } from "../components/AdminMenu";
 import "./style.css";
 import { Table, Button, Form, Col, Modal } from 'react-bootstrap';
 import Moment from 'react-moment';
@@ -29,14 +28,6 @@ class Users extends Component {
         allUsers: [],
         getOneUser: []
     }
-
-    /*     constructor(props) {
-            super(props);
-            this.state = {
-                allRoles: []
-            };
-        } */
-
     saveNewUser = (event) => {
         event.preventDefault()
         API.saveNewUser({
@@ -61,14 +52,14 @@ class Users extends Component {
         }).catch(err => toast.error("There is an error. Please contact adminstrator"))
     }
     componentDidMount() {
-        this.checkSession();
+        this.checkSecurity();
         this.getAllRoles();
         this.getAllUsers();
         this.resetAll();
     }
 
-    checkSession = () => {
-        API.getSession()
+    checkSecurity = () => {
+        API.checkSecurity()
             .then((res) => {
                 if (!(res.data.isUserLoggin)) {
                     this.setState({ userId: null })
@@ -152,7 +143,6 @@ class Users extends Component {
     render() {
         return (
             <div className="topSpacing">
-                <AdminMenu userId={this.state.userId} />
                 <Container>
                     <Form>
                         <Form.Row>

@@ -26,22 +26,8 @@ class Clients extends Component {
     }
 
     componentDidMount() {
-        this.checkSession();
         this.getAllServiceCustomers();
         this.getAllDeparments();
-    }
-    checkSession = () => {
-        API.getSession()
-            .then((res) => {
-                if (!(res.data.isUserLoggin)) {
-                    this.props.history.push('/', { some: 'state' })
-                } else {
-                    this.setState({
-                        userId: res.data.userId
-                    })
-                }
-            })
-            .catch(err => console.log(err))
     }
     ///////////////GET ALL EMPLOYEES///////////
     getAllDeparments = () => {

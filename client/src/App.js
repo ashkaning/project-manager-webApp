@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import API from "./utils/API";
 /* COMPONENT */
-import { AdminMenu } from "./components/AdminMenu";
+import { AdminMenu, EmployeeMenu, CustomerMenu } from "./components/Menu";
 /* PAGES */
 import Home from "./pages/Home";
 import Role from "./pages/Role";
@@ -16,6 +16,7 @@ import NoMatch from "./pages/NoMatch";
 
 class App extends Component {
   state = {
+    roleId: null,
     userId: null
   }
   componentDidMount() {
@@ -24,7 +25,9 @@ class App extends Component {
   checkSecurity = () => {
     API.checkSecurity()
       .then((res) => {
+        console.log(res.data)
         if (res.data.isUserLoggin === true && res.data.userId !== null) {
+          this.setState({ userId: res.data.userId, roleId: res.data.roleId })
           toast.info("You are logged in... !");
           this.props.history.push('/users', { some: 'state' })
         }
@@ -37,12 +40,26 @@ class App extends Component {
       })
       .catch(err => console.log(err))
   }
+  menu = (userId, roleId) => {
+    if (roleId === 14) {
+      return <AdminMenu userId={this.state.userId} />
+    }
+    else if (roleId === 13) {
+      return <CustomerMenu userId={this.state.userId} />
+    }
+    else if (roleId >= 1 && roleId <= 5) {
+      return <EmployeeMenu userId={this.state.userId} />
+    }
+    else {
+      
+    }
+  }
 
   render() {
     return (
       <Router>
         <div>
-          <AdminMenu userId={this.state.userId} />
+          {this.menu(this.state.userId, this.state.roleId)}
           <ToastContainer />
           <Switch>
             <Route exact path="/" component={Home} />

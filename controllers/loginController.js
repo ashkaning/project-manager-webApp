@@ -12,6 +12,7 @@ module.exports = {
                     .then(match => {
                         if (match) {
                             username.session.userId = user.dataValues.id
+                            username.session.roleId = user.dataValues.RoleId
                             username.session.isUserLoggin = true;
                             return password.json(username.session)
                         }
@@ -34,7 +35,8 @@ module.exports = {
         if (req.session.isUserLoggin) {
             let data = {
                 isUserLoggin: req.session.isUserLoggin,
-                userId: req.session.userId
+                userId: req.session.userId,
+                roleId: req.session.roleId
             }
             console.log('TRUE')
             console.log(req.session)

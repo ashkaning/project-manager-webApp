@@ -52,13 +52,13 @@ class Users extends Component {
         }).catch(err => toast.error("There is an error. Please contact adminstrator"))
     }
     componentDidMount() {
-        this.checkSecurity();
-        this.getAllRoles();
+/*         this.checkSecurity();
+ */        this.getAllRoles();
         this.getAllUsers();
         this.resetAll();
     }
 
-    checkSecurity = () => {
+    /* checkSecurity = () => {
         API.checkSecurity()
             .then((res) => {
                 if (!(res.data.isUserLoggin)) {
@@ -71,7 +71,7 @@ class Users extends Component {
                 }
             })
             .catch(err => console.log(err))
-    }
+    } */
     //////////////GET ALL USERS INFO///////////////
     getAllUsers = () => {
         API.getAllUsers()

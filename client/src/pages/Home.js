@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import API from "../utils/API";
 import { toast } from "react-toastify"
 import { Input, FormBtn } from "../components/Form";
-import { Link } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css'
 import { Col, Row, Container, ColDark } from "../components/Grid";
 import "./style.css"
@@ -13,9 +12,9 @@ class Home extends Component {
         password: "",
         alertText: ""
     };
-   /*  componentDidMount() {
-        this.checkSecurity();
-    } */
+     componentDidMount() {
+         this.checkSecurity();
+     }
     handleInputChange = event => {
         const { name, value } = event.target;
         this.setState({
@@ -31,32 +30,31 @@ class Home extends Component {
             .then((result) => {
                 if (!(result.data.isUserLoggin)) {
                     toast.error("username or password is wrong");
-
                 } else {
                     toast.info("redirecting to your profile");
-                    this.props.history.push('/users', { some: 'state' })
-
+                    //this.props.history.push('/profile', { some: 'state' })
+                    window.location.href="/profile"
                 }
-
             })
-            .catch(err => console.log(err));
+            .catch(err => toast.error("something is wrong with logging in")
+            );
     }
-   /*  checkSecurity = () => {
-        API.checkSecurity()
-            .then((res) => {
-                if (res.data.isUserLoggin === true && res.data.userId !== null) {
-                    toast.info("You are logged in... !");
-                    this.props.history.push('/users', { some: 'state' })
-                }
-                else if (res.data.isUserLoggin === false && res.data.userId === null) {
-                    toast.info("Please Try To Login... !");
-                }
-                else {
-                    toast.info("mmm... Something is wrong. Please Try To again... !");
-                }
-            })
-            .catch(err => console.log(err))
-    } */
+     checkSecurity = () => {
+         API.checkSecurity()
+             .then((res) => {
+                 if (res.data.isUserLoggin === true && res.data.userId !== null) {
+                     toast.info("You are logged in... !");
+                     this.props.history.push('/profile', { some: 'state' })
+                 }
+                 else if (res.data.isUserLoggin === false && res.data.userId === null) {
+                     toast.info("Please Try To Login... !");
+                 }
+                 else {
+                     toast.info("mmm... Something is wrong. Please Try To again... !");
+                 }
+             })
+             .catch(err => console.log(err))
+     }
     render() {
         return (
             <Container fluid>

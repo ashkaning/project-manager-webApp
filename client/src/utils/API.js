@@ -76,6 +76,10 @@ export default {
     },
     updateEmployee: function (data) {
         return axios.put("/api/serviceCustomerAssignedEmployeeUpdate", data)
+    },
+    /* PROFILE */
+    profileInfo: function(data){
+        return axios.post("/api/profile", data)
     }
 
 }

@@ -34,6 +34,9 @@ export function AdminMenu(userId) {
             <a className="nav-link" href="/users">Users</a>
           </li>
           <li className="nav-item">
+            <a className="nav-link" href="/profile">Profile</a>
+          </li>
+          <li className="nav-item">
             {userId === null ? '' : <a className="nav-link" href="" onClick={logOut}>Log Out</a>}
           </li>
         </ul>
@@ -68,7 +71,7 @@ export function EmployeeMenu(userId) {
             <a className="nav-link" href="/clients">Clients</a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="/users">Users</a>
+            <a className="nav-link" href="/profile">Profile</a>
           </li>
           <li className="nav-item">
             {userId === null ? '' : <a className="nav-link" href="" onClick={logOut}>Log Out</a>}
@@ -100,6 +103,9 @@ export function CustomerMenu(userId) {
         <ul className="navbar-nav" id="category-nav">
           <li className="nav-item">
             <a className="nav-link" href="/services">Services</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/profile">Profile</a>
           </li>
           <li className="nav-item">
             {userId === null ? '' : <a className="nav-link" href="" onClick={logOut}>Log Out</a>}

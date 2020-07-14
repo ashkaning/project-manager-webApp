@@ -14,10 +14,22 @@ module.exports = {
                             username.session.userId = user.dataValues.id
                             username.session.roleId = user.dataValues.RoleId
                             username.session.isUserLoggin = true;
-                            return password.json(username.session)
+                            if (user.dataValues.RoleId === 14) {
+                                return password.json(username.session)
+                            }
+                            else if (user.dataValues.RoleId === 13) {
+                                return password.json(username.session)
+                            }
+                            else if (user.dataValues.RoleId > 0 && user.dataValues.RoleId < 5) {
+                                return password.json(username.session)
+                            }
+                            else {
+                                username.session.destroy()
+                                return password.status(401).send('no user exists in db to update');
+                            }
                         }
                         username.session.isUserLoggin = false;
-                        return password.json(username.session)
+                        return password.status(401).send('no user exists in db to update');
                     })
                     .catch(err => done(err));
             })

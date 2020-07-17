@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
 import "./style.css";
 import { Table, Button, Form, Col, Modal } from 'react-bootstrap';
+import CheckSecurity from "../components/Security";
 import Moment from 'react-moment';
 
 class Profile extends Component {
@@ -24,6 +25,9 @@ class Profile extends Component {
         logo: '',
         password: '',
         role: '',
+        userId: '',
+        roleId: '',
+        resDataCheckSecurity: {}
     }
     componentDidMount() {
         this.checkSecurity();
@@ -31,23 +35,15 @@ class Profile extends Component {
     checkSecurity = () => {
         API.checkSecurity()
             .then((res) => {
-                if (res.data.isUserLoggin === true && res.data.userId !== null) {
-                    this.setState({ userId: res.data.userId, roleId: res.data.roleId })
-                    this.profileInfo(this.state.userId)
-                }
-                else if (res.data.isUserLoggin === false && res.data.userId === null) {
-                    toast.info("Please Try To Login... !");
-                }
-                else {
-                    toast.info("mmm... Something is wrong. Please Try To again... !");
-                }
+                this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
+                this.profileInfo(this.state.userId)
+                this.state.resDataCheckSecurity = Object.assign({}, res.data);
             })
             .catch(err => console.log(err))
     }
     profileInfo = (userId) => {
-        API.profileInfo({id: userId})
+        API.profileInfo({ id: userId })
             .then(result => {
-                console.log(result.data)
                 this.setState({
                     fName: result.data.fName,
                     lName: result.data.lName,
@@ -62,7 +58,7 @@ class Profile extends Component {
                     description: result.data.description,
                     logo: result.data.logo,
                     role: result.data.Role.name
-                }) 
+                })
             })
             .catch(err => toast.error('There is something wrong on getting profile info. Please contact the adminstrator'))
     }
@@ -71,6 +67,8 @@ class Profile extends Component {
     render() {
         return (
             <Container>
+                {CheckSecurity(this.state.resDataCheckSecurity)}
+
                 <Form>
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridFname">

@@ -4,6 +4,7 @@ import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Input, FormBtn } from "../components/Form";
 import { Col, Row, Container } from "../components/Grid";
+import CheckSecurity from "../components/Security";
 import "./style.css";
 import { Table, Button, Modal } from 'react-bootstrap';
 
@@ -12,20 +13,32 @@ class Role extends Component {
         userId: null,
         roleName: "",
         updateRoleName: "",
-        updateRoleDesc: ""
+        updateRoleDesc: "",
+        roleId: '',
     };
     constructor(props) {
         super(props);
         this.state = {
             roleDesc: "",
             allRoles: [],
-            getOneRole: []
+            getOneRole: [],
+            resDataCheckSecurity: {}
+
         };
         this.handleTextChange = this.handleTextChange.bind(this);
     }
 
     componentDidMount() {
+        this.checkSecurity();
         this.getAllRoles();
+    }
+    checkSecurity = () => {
+        API.checkSecurity()
+            .then((res) => {
+                this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId });
+                this.state.resDataCheckSecurity = Object.assign({}, res.data);
+            })
+            .catch(err => console.log(err))
     }
     /////////////////////Get all info from Roles db////////////////////
     getAllRoles = () => {
@@ -108,8 +121,8 @@ class Role extends Component {
     //////////////////////////////////////////
     render() {
         return (
-            this.state.userId === null ? <p></p> :
                 <Container>
+                    {CheckSecurity(this.state.resDataCheckSecurity)}
                     <Row>
                         <Col size="md-12">
                             <h2 className="text-center">

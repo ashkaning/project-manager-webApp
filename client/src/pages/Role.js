@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import API from "../utils/API";
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
-import { Input, FormBtn } from "../components/Form";
+import { FormBtn } from "../components/Form";
 import { Col, Row, Container } from "../components/Grid";
 import CheckSecurity from "../components/Security";
 import "./style.css";
@@ -37,6 +37,10 @@ class Role extends Component {
             .then((res) => {
                 this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId });
                 this.state.resDataCheckSecurity = Object.assign({}, res.data);
+                if (this.state.roleId !== 14) {
+                    toast.info("You don't have permission to see the page... !");
+                    this.props.history.push('/profile', { some: 'state' })
+                }
             })
             .catch(err => console.log(err))
     }

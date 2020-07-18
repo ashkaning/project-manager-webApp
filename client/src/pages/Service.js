@@ -39,8 +39,16 @@ class Services extends Component {
         API.checkSecurity()
             .then((res) => {
                 this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
-                this.profileInfo(this.state.userId)
                 this.state.resDataCheckSecurity = Object.assign({}, res.data);
+                if (this.state.roleId !== 14
+                    || this.state.roleId !== 1
+                    || this.state.roleId !== 2
+                    || this.state.roleId !== 3
+                    || this.state.roleId !== 4
+                    || this.state.roleId !== 5) {
+                    toast.info("You don't have permission to see the page... !");
+                    this.props.history.push('/profile', { some: 'state' })
+                }
             })
             .catch(err => console.log(err))
     }
@@ -116,8 +124,12 @@ class Services extends Component {
                 {this.state.allServices.map((singleMenu) => {
                     if (singleMenu.subId === 0) {
                         return (<li key={singleMenu.id}>{singleMenu.serviceName}
+
                             <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleMenu.id)} >Edit</a>
-                            <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleMenu.id)} >Delete</a>
+                            {(this.state.roleId === 14) ?
+                                <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleMenu.id)} >Delete</a>
+                                : <span></span>
+                            }
                             {this.subMenuMain(singleMenu.id)}</li>)
                     }
 
@@ -133,7 +145,10 @@ class Services extends Component {
             ParentsubMenu.map(singleParentsubMenu => (
                 <ul> <li key={singleParentsubMenu.id}>{singleParentsubMenu.serviceName}
                     <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleParentsubMenu.id)} >Edit</a>
-                    <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleParentsubMenu.id)}>Delete</a>
+                    {(this.state.roleId === 14) ?
+                        <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleParentsubMenu.id)}>Delete</a>
+                        : <span></span>
+                    }
                     {this.subMenuMain(singleParentsubMenu.id)}</li></ul>
             ))
 

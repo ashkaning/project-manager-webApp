@@ -3,6 +3,7 @@ import API from "../utils/API";
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
+import CheckSecurity from "../components/Security";
 import "./style.css";
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 
@@ -21,13 +22,26 @@ class Clients extends Component {
         updateStatus: '',
         updateEmployee: '',
         getOneEmployee: [],
-        getAllEmployees: []
+        getAllEmployees: [],
+        resDataCheckSecurity: {},
+        roleId: '',
+        userId: ''
 
     }
 
     componentDidMount() {
         this.getAllServiceCustomers();
         this.getAllDeparments();
+        this.checkSecurity();
+    }
+    checkSecurity = () => {
+        API.checkSecurity()
+            .then((res) => {
+                this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
+                this.profileInfo(this.state.userId)
+                this.state.resDataCheckSecurity = Object.assign({}, res.data);
+            })
+            .catch(err => console.log(err))
     }
     ///////////////GET ALL EMPLOYEES///////////
     getAllDeparments = () => {
@@ -212,35 +226,38 @@ class Clients extends Component {
     render() {
         return (
             this.state.userId === null ? <p></p> :
-                <Container>
-                    <Row>
-                        <Col size="md-12">
-                            <h2 className="text-center"> Set up services to a client</h2>
-                            <Form.Row>
-                                <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
-                                    <option>Choose...</option>
-                                    {this.state.allCustomers.map(singleCustomer => (
-                                        <option key={singleCustomer.clientId} value={singleCustomer.clientId}>{singleCustomer.User.fName} - {singleCustomer.User.lName} - {singleCustomer.User.companyName}</option>
-                                    ))}
-                                </Form.Control>
-                                <br /><br />
-                                <Button onClick={this.serviceClient} variant="primary" type="submit">
-                                    Search
+                <div>
+                    {CheckSecurity(this.state.resDataCheckSecurity)}
+                    <Container>
+                        <Row>
+                            <Col size="md-12">
+                                <h2 className="text-center"> Set up services to a client</h2>
+                                <Form.Row>
+                                    <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
+                                        <option>Choose...</option>
+                                        {this.state.allCustomers.map(singleCustomer => (
+                                            <option key={singleCustomer.clientId} value={singleCustomer.clientId}>{singleCustomer.User.fName} - {singleCustomer.User.lName} - {singleCustomer.User.companyName}</option>
+                                        ))}
+                                    </Form.Control>
+                                    <br /><br />
+                                    <Button onClick={this.serviceClient} variant="primary" type="submit">
+                                        Search
                             </Button>
-                            </Form.Row>
-                        </Col>
-                    </Row>
-                    {/* ///////////////////show services */}
-                    <hr />
-                    <Row>
-                        <Col size="md-12">
-                            <h2 className="text-center">Here are the services</h2>
-                            {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p>Please choose a client to see the services</p>)}
+                                </Form.Row>
+                            </Col>
+                        </Row>
+                        {/* ///////////////////show services */}
+                        <hr />
+                        <Row>
+                            <Col size="md-12">
+                                <h2 className="text-center">Here are the services</h2>
+                                {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p>Please choose a client to see the services</p>)}
 
 
-                        </Col>
-                    </Row>
-                </Container>
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
         )
     }
 }

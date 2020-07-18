@@ -3,6 +3,7 @@ import API from "../utils/API";
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
+import CheckSecurity from "../components/Security";
 import "./style.css";
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 
@@ -24,14 +25,25 @@ class Services extends Component {
         resParent: [],
         allCustomers: [],
         allDeparments: [],
-        servicesToCustomer: []
+        servicesToCustomer: [],
+        resDataCheckSecurity: {},
+        roleId: ''
     }
     componentDidMount() {
         this.getAllServices();
         this.getAllCustomers();
         this.getAllDeparments();
+        this.checkSecurity();
     }
-    
+    checkSecurity = () => {
+        API.checkSecurity()
+            .then((res) => {
+                this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
+                this.profileInfo(this.state.userId)
+                this.state.resDataCheckSecurity = Object.assign({}, res.data);
+            })
+            .catch(err => console.log(err))
+    }
     //////////////////////////
     getAllServices = () => {
         API.getAllServices()
@@ -181,7 +193,7 @@ class Services extends Component {
     render() {
         return (
             <div className="topSpacing">
-        
+                {CheckSecurity(this.state.resDataCheckSecurity)}
                 <Container>
                     {/* ///////////update selected service //////////////*/}
                     <Row>

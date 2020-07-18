@@ -121,8 +121,10 @@ class Role extends Component {
     //////////////////////////////////////////
     render() {
         return (
+            <div>
+
+                {CheckSecurity(this.state.resDataCheckSecurity)}
                 <Container>
-                    {CheckSecurity(this.state.resDataCheckSecurity)}
                     <Row>
                         <Col size="md-12">
                             <h2 className="text-center">
@@ -209,7 +211,7 @@ class Role extends Component {
                     </Row>
 
                 </Container>
-
+            </div>
         );
     }
 }

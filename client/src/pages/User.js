@@ -4,6 +4,7 @@ import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
 import "./style.css";
+import CheckSecurity from "../components/Security";
 import { Table, Button, Form, Col, Modal } from 'react-bootstrap';
 import Moment from 'react-moment';
 
@@ -26,7 +27,9 @@ class Users extends Component {
         userId: 0,
         allRoles: [],
         allUsers: [],
-        getOneUser: []
+        getOneUser: [],
+        resDataCheckSecurity:{},
+        roleId:''
     }
     saveNewUser = (event) => {
         event.preventDefault()
@@ -52,26 +55,20 @@ class Users extends Component {
         }).catch(err => toast.error("There is an error. Please contact adminstrator"))
     }
     componentDidMount() {
-/*         this.checkSecurity();
- */        this.getAllRoles();
+        this.checkSecurity();
+        this.getAllRoles();
         this.getAllUsers();
         this.resetAll();
     }
-
-    /* checkSecurity = () => {
+    checkSecurity = () => {
         API.checkSecurity()
             .then((res) => {
-                if (!(res.data.isUserLoggin)) {
-                    this.setState({ userId: null })
-                    this.props.history.push('/', { some: 'state' })
-                } else {
-                    this.setState({
-                        userId: res.data.userId
-                    })
-                }
+                this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
+                this.profileInfo(this.state.userId)
+                this.state.resDataCheckSecurity = Object.assign({}, res.data);
             })
             .catch(err => console.log(err))
-    } */
+    }
     //////////////GET ALL USERS INFO///////////////
     getAllUsers = () => {
         API.getAllUsers()
@@ -143,6 +140,7 @@ class Users extends Component {
     render() {
         return (
             <div className="topSpacing">
+                {CheckSecurity(this.state.resDataCheckSecurity)}
                 <Container>
                     <Form>
                         <Form.Row>

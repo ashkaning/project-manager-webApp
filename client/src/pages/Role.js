@@ -37,7 +37,7 @@ class Role extends Component {
             .then((res) => {
                 this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId });
                 this.state.resDataCheckSecurity = Object.assign({}, res.data);
-                if (this.state.roleId !== 14) {
+                if (this.state.roleId !== 6) {
                     toast.info("You don't have permission to see the page... !");
                     this.props.history.push('/profile', { some: 'state' })
                 }

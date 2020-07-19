@@ -27,7 +27,7 @@ function Menu(userId, roleId) {
         userId: userId,
         roleId: roleId
     }
-    if (roleId === 14) {
+    if (roleId === 6) {
         return <AdminMenu userInfo={userInfo} />
     }
     else if (roleId === 13) {

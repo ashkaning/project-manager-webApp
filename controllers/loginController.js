@@ -14,7 +14,7 @@ module.exports = {
                             username.session.userId = user.dataValues.id
                             username.session.roleId = user.dataValues.RoleId
                             username.session.isUserLoggin = true;
-                            if (user.dataValues.RoleId === 14) {
+                            if (user.dataValues.RoleId === 6) {
                                 return password.json(username.session)
                             }
                             else if (user.dataValues.RoleId === 13) {

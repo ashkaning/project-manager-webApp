@@ -40,12 +40,7 @@ class Services extends Component {
             .then((res) => {
                 this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
                 this.state.resDataCheckSecurity = Object.assign({}, res.data);
-                if (this.state.roleId !== 14
-                    || this.state.roleId !== 1
-                    || this.state.roleId !== 2
-                    || this.state.roleId !== 3
-                    || this.state.roleId !== 4
-                    || this.state.roleId !== 5) {
+                if (this.state.roleId > 6) {
                     toast.info("You don't have permission to see the page... !");
                     this.props.history.push('/profile', { some: 'state' })
                 }
@@ -124,9 +119,12 @@ class Services extends Component {
                 {this.state.allServices.map((singleMenu) => {
                     if (singleMenu.subId === 0) {
                         return (<li key={singleMenu.id}>{singleMenu.serviceName}
+                            {(this.state.roleId <= 6) ?
+                                <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleMenu.id)} >Edit</a>
+                                : <span></span>
+                            }
 
-                            <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleMenu.id)} >Edit</a>
-                            {(this.state.roleId === 14) ?
+                            {(this.state.roleId === 6) ?
                                 <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleMenu.id)} >Delete</a>
                                 : <span></span>
                             }
@@ -144,8 +142,11 @@ class Services extends Component {
         return (
             ParentsubMenu.map(singleParentsubMenu => (
                 <ul> <li key={singleParentsubMenu.id}>{singleParentsubMenu.serviceName}
-                    <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleParentsubMenu.id)} >Edit</a>
-                    {(this.state.roleId === 14) ?
+                    {(this.state.roleId <= 6) ?
+                        <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleParentsubMenu.id)} >Edit</a>
+                        : <span></span>
+                    }
+                    {(this.state.roleId === 6) ?
                         <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleParentsubMenu.id)}>Delete</a>
                         : <span></span>
                     }

@@ -28,7 +28,7 @@ export function AdminMenu(userInfo) {
       })
   }
   return (
-    userDetail.roleId !== 14 ? logOut() :
+    userDetail.roleId !== 6 ? logOut() :
       <nav className="navbar navbar-expand-lg sticky-top navbar-light bg-light bg-navBar">
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>

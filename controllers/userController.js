@@ -30,12 +30,16 @@ module.exports = {
                                     .then((dbModel) => {
                                         res.json(dbModel);
                                     })
-                                    .catch(err => res.status(422).json(err));
+                                    .catch(err => {
+                                        console.log(err)
+                                        res.status(422).json(err)
+                                    }
+                                    );
                             })
-                        }) .catch(err => res.status(422).json(err));
+                        }).catch(err => res.status(422).json(err));
                 }
-                else{
-                   res.status(422);
+                else {
+                    res.status(422);
                 }
             })
     },

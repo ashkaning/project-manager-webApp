@@ -52,7 +52,10 @@ class Users extends Component {
         }).then(resSucceed => {
             toast.success("User created successfully")
             this.resetAll()
-        }).catch(err => toast.error("There is an error. Please contact adminstrator"))
+        }).catch(err => {
+            console.log(err)
+            toast.error("There is an error. Please contact adminstrator")
+        })
     }
     componentDidMount() {
         this.checkSecurity();
@@ -64,7 +67,6 @@ class Users extends Component {
         API.checkSecurity()
             .then((res) => {
                 this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
-                this.profileInfo(this.state.userId)
                 this.state.resDataCheckSecurity = Object.assign({}, res.data);
             })
             .catch(err => console.log(err))

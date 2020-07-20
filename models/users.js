@@ -39,7 +39,7 @@ module.exports = function (sequelize, DataTypes) {
         phone:{
             type: DataTypes.STRING,
             validate: {
-                len: [11]
+                len: [10]
             }
         },
         companyName: {

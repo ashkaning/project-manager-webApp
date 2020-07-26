@@ -52,3 +52,7 @@ p,span{
     color: blue;
     font-weight: bolder;
 }
+.serviceTitle{
+    font-weight: bolder;
+    color: #7a2f2f;
+}

@@ -39,7 +39,7 @@ export function AdminMenu(userInfo) {
               <a className="nav-link" href="/roles">Departments/Roles</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/services">Services</a>
+              <a className="nav-link" href="/servicesmenu">Services Menu</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/clients">Clients</a>
@@ -79,7 +79,7 @@ export function EmployeeMenu(userId) {
       <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
         <ul className="navbar-nav" id="category-nav">
           <li className="nav-item">
-            <a className="nav-link" href="/services">Services</a>
+            <a className="nav-link" href="/servicesmenu">Services Menu</a>
           </li>
           <li className="nav-item">
             <a className="nav-link" href="/clients">Clients</a>
@@ -116,7 +116,7 @@ export function CustomerMenu(userId) {
       <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
         <ul className="navbar-nav" id="category-nav">
           <li className="nav-item">
-            <a className="nav-link" href="/services">Services</a>
+            <a className="nav-link" href="/service">My Services</a>
           </li>
           <li className="nav-item">
             <a className="nav-link" href="/profile">Profile</a>

@@ -1,7 +1,7 @@
 import axios from "axios";
 export default {
     /* MENU */
-    logOut: function(){
+    logOut: function () {
         return axios.get("/api/logOut")
     },
     /* Roles/Deparments API */
@@ -78,8 +78,12 @@ export default {
         return axios.put("/api/serviceCustomerAssignedEmployeeUpdate", data)
     },
     /* PROFILE */
-    profileInfo: function(data){
+    profileInfo: function (data) {
         return axios.post("/api/profile", data)
+    },
+    /* COMMENTS */
+    lastComment: function (data) {
+        return axios.post("/api/comments", data)
     }
 
 }

@@ -10,14 +10,17 @@ class NoMatch extends Component {
 
     render() {
         return (
-            <Row>
-                <Col size="md-12">
-                    <h1 className="text-center">Are you lost?!</h1>    
-                </Col>
-            </Row>
+            <Container>
+                <Row>
+                    <Col size="md-12">
+                        <div className="text-center">
+                            <h1 className="text-center">Are you lost?!</h1>
+                            <Link className="btn btn-primary" to="/profile">Click Here</Link>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
         );
     }
-
-
 }
 export default NoMatch;

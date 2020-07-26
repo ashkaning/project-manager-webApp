@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 /* PAGES */
 import Home from "./pages/Home";
 import Role from "./pages/Role";
+import ServiceMenu from "./pages/ServiceMenu";
 import Service from "./pages/Service";
 import Users from "./pages/User";
 import Clients from "./pages/Clients";
@@ -22,7 +23,8 @@ class App extends Component {
             <Route exact path="/roles" component={Role} />
             <Route exact path="/users" component={Users} />
             <Route exact path="/clients" component={Clients} />
-            <Route exact path="/services" component={Service} />
+            <Route exact path="/servicesmenu" component={ServiceMenu} />
+            <Route exact path="/service" component={Service} />
             <Route exact path="/profile" component={Profile} />
             <Route component={NoMatch} />
           </Switch>

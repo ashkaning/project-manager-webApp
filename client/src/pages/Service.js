@@ -7,32 +7,27 @@ import CheckSecurity from "../components/Security";
 import "./style.css";
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 
-class Services extends Component {
-
+class Service extends Component {
     state = {
-        userId: null,
-        serviceName: '',
-        serviceDescription: '',
-        subId: '',
-        updateServiceName: '',
-        UpdateSubId: '',
-        updateserviceDescription: '',
-        customerId: '',
-        DeparmentId: '',
-        allServices: [],
-        oneService: [],
-        resOneServ: [],
-        resParent: [],
         allCustomers: [],
-        allDeparments: [],
-        servicesToCustomer: [],
+        allServicesClient: [],
+        subSingleMenu: [],
+        customerId: null,
+        status: [
+            { value: "0", label: "Not Activated" },
+            { value: "1", label: "Waiting on Client" },
+            { value: "2", label: "Completed" },
+            { value: "3", label: "Canceled" }
+        ],
+        updateStatus: '',
+        updateEmployee: '',
+        getOneEmployee: [],
+        getAllEmployees: [],
         resDataCheckSecurity: {},
-        roleId: ''
+        roleId: '',
+        userId: ''
     }
     componentDidMount() {
-        this.getAllServices();
-        this.getAllCustomers();
-        this.getAllDeparments();
         this.checkSecurity();
     }
     checkSecurity = () => {
@@ -40,306 +35,230 @@ class Services extends Component {
             .then((res) => {
                 this.setState({ resDataCheckSecurity: res.data, userId: res.data.userId, roleId: res.data.roleId })
                 this.state.resDataCheckSecurity = Object.assign({}, res.data);
-                if (this.state.roleId > 6) {
-                    toast.info("You don't have permission to see the page... !");
-                    this.props.history.push('/profile', { some: 'state' })
-                }
+                this.serviceClient();
+                this.getAllDeparments();
+
             })
             .catch(err => console.log(err))
     }
-    //////////////////////////
-    getAllServices = () => {
-        API.getAllServices()
-            .then(resAllServices => {
-                this.setState({ allServices: resAllServices.data })
-            }).catch(err => toast.error("There is an error. Please contact administrator. (Get ALL Service)"))
-    }
-    /////////SAVE NNEW SERVICE API FUNCTION////////////////////
-    saveNewService = (event) => {
-        event.preventDefault()
-        API.saveNewService({
-            serviceName: this.state.serviceName,
-            serviceDescription: this.state.serviceDescription,
-            subId: this.state.subId
-        }).then(resAllServoces => {
-            this.serviceMenu();
-            toast.success("Menu added!");
-            window.location.reload(false);
-
-        }).catch(err => toast.error("There is an error. Please contact administrator (on Saving)"))
-    }
-    //////////////////DELETE Menu////////
-    deleteService = (evt) => {
-        API.deleteService({ data: { deleleServiceId: evt } })
-            .then(resDel => {
-                toast.success("The Item deleted successfully!")
-            }).catch(err => toast.error("There is an error. Please contact administrator (on Deleteing)"))
-    }
-    ///////////////EDIT SERVICE///////////////////
-    getOneServiceInfo = (serviceId) => {
-        this.closeButton();
-        API.getOneServiceInfo({ id: serviceId })
-            .then(resGetOne => {
-                this.setState({
-                    resOneServ: resGetOne.data.resOneServ
-                })
-                if (!resGetOne.data.resParent) {
-
-                    this.setState({ resParent: { serviceName: 'Parent', id: '0' } });
-                }
-                else {
-                    this.setState({ resParent: resGetOne.data.resParent });
-                }
-            }).catch(err => toast.error("There is an error. Please contact administrator (on Get One Info for Editing)"))
-    }
-    ////////////////Get all client lists////////////
-    getAllCustomers = () => {
-        API.getAllCustomers()
-            .then(resCustomer => {
-                this.setState({ allCustomers: resCustomer.data })
-            }).catch(err => toast.error("There is an error. Please contact administrator (Getting All Customers)"))
+    /////////////Get services for a selected client//////
+    serviceClient = () => {
+        this.setState({ allServicesClient: '' })
+        console.log(this.state.userId)
+        API.serviceClient({ clientId: this.state.userId })
+            .then(resServiceClient => {
+                console.log(resServiceClient.data)
+                this.setState({ allServicesClient: resServiceClient.data });
+            }).catch(err => toast.error("There is an error. Please contact administrator (Getting Services for the selected service)"));
     }
     getAllDeparments = () => {
-        API.getAllDeparments()
-            .then(resDeparments => {
-                this.setState({ allDeparments: resDeparments.data })
-            }).catch(err => toast.error("There is an error. Please contact administrator (Getting All Departmnets)"))
+        API.getAllDeparments({})
+            .then(resGetAllDeparments => {
+                this.setState({ getAllEmployees: resGetAllDeparments.data })
+            }).catch(err => toast.error("There is an error. Please contact administrator (getting all departments)"))
     }
-    ////////////GETTING INPUT VALUE/////////////////////
-    handleInputChange = event => {
+    //////////////////GET ONE EMPLOYEE//////////
+    getEmployee = (selectedId, serviceId) => {
+        let selctedEmployee = (this.state.getAllEmployees.filter(obj => obj.id === selectedId))
+        return (
+
+            selctedEmployee.map(singleSelctedEmployee => (
+                /*  <Form.Control onChange={(evt) => this.updateAsseignedEmoloyee(evt, serviceId)} as="select" name="updateEmployee">
+                     <option value={singleSelctedEmployee.id}>{singleSelctedEmployee.fName} {singleSelctedEmployee.lName} - {singleSelctedEmployee.Role.name}</option>
+                     {this.getAllEmployeesoptions(selectedId)}
+                 </Form.Control> */
+                <p>{singleSelctedEmployee.Role.name}</p>
+            )
+            ))
+    }
+    getAllEmployeesoptions = (selectedId) => {
+        let selctedEmployee = (this.state.getAllEmployees.filter(obj => obj.id !== selectedId))
+        return (
+            selctedEmployee.map(singleEmployee => (
+                <option key={singleEmployee.id} value={singleEmployee.id}>{singleEmployee.fName} {singleEmployee.lName} - {singleEmployee.Role.name}</option>
+            ))
+        )
+    }
+    /* updateAsseignedEmoloyee = (event, serviceId) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
-        });
-    };
+        }, () => this.updateAsseignedEmoloyeeAPI(serviceId))
+    }
+    updateAsseignedEmoloyeeAPI = (serviceId) => {
+        API.updateEmployee({
+            id: serviceId,
+            employeeId: this.state.updateEmployee
+        })
+            .then(updatedResult => {
+                toast.success("Assinged Employeed updated successfully!")
+            }).catch(err => toast.error("There is an error. Please contact administrator (updating assigned employee)"))
+    } */
+    //////////////Get All Customers////////////////
+    /*  getAllServiceCustomers = () => {
+         API.getAllServiceCustomers()
+             .then(resCustomer => {
+                 this.setState({ allCustomers: resCustomer.data })
+             }).catch(err => {
+                 toast.error("There is an error. Please contact administrator (Getting All Customers)")
+             })
+     } */
+
+    ////////////////UPDATE STATUS///////////////
+    /*  updateStatus = (event, updateIdStatus) => {
+         const { name, value } = event.target;
+         this.setState({
+             [name]: value
+         }, () => this.updateRealStatus(updateIdStatus));
+ 
+     }
+     updateRealStatus = (evet) => {
+         if (this.state.updateStatus === 0 || this.state.updateStatus === null) {
+             toast.error("Please select an update")
+         }
+         else {
+             API.updateStatus({
+                 id: evet,
+                 content: this.state.updateStatus
+             }).then(result => {
+                 toast.success("The Status updated successfully")
+             }).catch(err => toast.error("There is an error. Please contact administrator (Updating status)"));
+         }
+     } */
+    //////////////////////////
+    selectFunction = (selectedId) => {
+
+        if (selectedId === 0) {
+            return (<option className="notActive" value="0">Not Activate</option>)
+        }
+        else if (selectedId === 1) {
+            return (<option className="waiting" value="1">Waiting on Client</option>)
+
+        }
+        else if (selectedId === 2) {
+            return (<option className="completed" value="2">Completed</option>)
+
+        }
+        else if (selectedId === 3) {
+            return (<option className="canceled" value="3">Canceled</option>)
+
+        }
+        else {
+            return (<option>Select...</option>)
+        }
+    }
     /////////////MENU SERVICE SIDEBAR//////////
     serviceMenu = () => {
         return (
             <ol>
-                {this.state.allServices.map((singleMenu) => {
-                    if (singleMenu.subId === 0) {
-                        return (<li key={singleMenu.id}>{singleMenu.serviceName}
-                            {(this.state.roleId <= 6) ?
-                                <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleMenu.id)} >Edit</a>
-                                : <span></span>
-                            }
+                {this.state.allServicesClient.map((singleMenu) => {
+                    if (singleMenu.Service.subId === 0) {
+                        return (
+                            <li key={singleMenu.id}><h4>{singleMenu.Service.serviceName}</h4>
+                                <Form>
+                                    <Form.Row>
+                                        <Form.Group as={Col}>
+                                            <Form.Label className="serviceTitle">Status</Form.Label>
+                                            <Form.Control onChange={(evt) => this.updateStatus(evt, singleMenu.id)} /* placeholder={this.selectFunction(singleMenu.status)} */ as="select" name="updateStatus">
+                                                {this.selectFunction(singleMenu.status)}
+                                                <option className="notActive" value="0">Not Activate</option>
+                                                <option className="waiting" value="1">Waiting on Client</option>
+                                                <option className="completed" value="2">Completed</option>
+                                                <option className="canceled" value="3">Canceled</option>
+                                            </Form.Control>
+                                        </Form.Group>
+                                        <Form.Group as={Col} className="text-center">
+                                            <Form.Label className="serviceTitle">Department of</Form.Label>
 
-                            {(this.state.roleId === 6) ?
-                                <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleMenu.id)} >Delete</a>
-                                : <span></span>
-                            }
-                            {this.subMenuMain(singleMenu.id)}</li>)
+                                            {this.getEmployee(singleMenu.employeeId, singleMenu.id)}
+
+                                        </Form.Group>
+                                       
+                                    </Form.Row>
+                                </Form>
+                                {this.subMenuMain(singleMenu.ServiceId)}
+                            </li>
+                        )
                     }
-
                 })}
             </ol>
         )
     }
 
     subMenuMain = (subIdSearch) => {
-        let ParentsubMenu = (this.state.allServices.filter(obj => obj.subId === subIdSearch))
+        let ParentsubMenu = (this.state.allServicesClient.filter(obj => obj.Service.subId === subIdSearch))
 
         return (
             ParentsubMenu.map(singleParentsubMenu => (
-                <ul> <li key={singleParentsubMenu.id}>{singleParentsubMenu.serviceName}
-                    {(this.state.roleId <= 6) ?
-                        <a className="customEditButton" href="#" onClick={() => this.getOneServiceInfo(singleParentsubMenu.id)} >Edit</a>
-                        : <span></span>
-                    }
-                    {(this.state.roleId === 6) ?
-                        <a className="customDeleteButton" href="#" onClick={() => this.deleteService(singleParentsubMenu.id)}>Delete</a>
-                        : <span></span>
-                    }
-                    {this.subMenuMain(singleParentsubMenu.id)}</li></ul>
-            ))
+                <ul>
+                    <li key={singleParentsubMenu.id}><h5>{singleParentsubMenu.Service.serviceName}</h5>
+                        <Form>
+                            <Form.Row>
+                                <Form.Group as={Col}>
+                                    <Form.Control onChange={(evt) => this.updateStatus(evt, singleParentsubMenu.id)} as="select" name="updateStatus">
+                                        {this.selectFunction(singleParentsubMenu.status)}
+                                        <option className="notActive" value="0">Not Activate</option>
+                                        <option className="waiting" value="1">Waiting on Client</option>
+                                        <option className="completed" value="2">Completed</option>
+                                        <option className="canceled" value="3">Canceled</option>
+                                    </Form.Control>
 
+                                </Form.Group>
+                                <Form.Group as={Col} className="text-center">
+                                    <Form.Label className="serviceTitle">Department of</Form.Label>
+                                    {this.getEmployee(singleParentsubMenu.employeeId, singleParentsubMenu.id)}
+                                </Form.Group>
+                            </Form.Row>
+                        </Form>
+                        {this.subMenuMain(singleParentsubMenu.ServiceId)}
+                    </li>
+                </ul >
+            ))
         )
     }
-    /*  childSubMenu = (subIdSearch) => {
-         let childSubMenuArray = (this.state.allServices.filter(obj => obj.subId === subIdSearch))
-         return (
-             childSubMenuArray.map(singlechildSubMenuArray => (
-                 <ul>
-                     <li>{singlechildSubMenuArray.serviceName}<a className="customDeleteButton" href="#" onClick={() => this.deleteService(singlechildSubMenuArray.id)} variant="danger">Delete</a>
-                         {this.childSubMenu(singlechildSubMenuArray.id)} </li>
-                 </ul>
-             ))
-         )
-     } */
-    //////////////////////Update selected service information
-    updateOneService = (serviceId) => {
-        API.updateOneService({
-            id: serviceId,
-            serviceName: this.state.updateServiceName,
-            subId: this.state.UpdateSubId,
-            serviceDescription: this.state.updateserviceDescription
-        })
-            .then(result => {
-                toast.success("service updated");
-                this.closeButton();
-            }).catch(err => toast.error("There is an error. Please contact administrator (update service)"))
-    }
-    ////////////////Create all services assign to a customer
-    assignAllServiceToClient = () => {
-        /*  let data = {
-             customerId: this.state.customerId,
-             allServices: this.state.allServices
-         } */
-        API.assignAllServiceToClient({
-            customerId: this.state.customerId,
-            allServices: this.state.allServices,
-            DeparmentId: this.state.DeparmentId
-        })
-            .then(savedResult => {
-                toast.success("All services assing to the client successfully")
-            }).catch(err => toast.error("There is an error. Please contact administrator (Assign services to the customer)"))
-    }
-    /////////////////////CLOSE EDIT FORM BOX
-    closeButton = () => {
-        var x = document.getElementById("popupUpdate");
-        if (x.style.display === "none") {
-            x.style.display = "block";
+    ////////////////////////////
+    handleInputChange = event => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
+        });
 
-        } else {
-            x.style.display = "none";
-        }
-
-    }
-    //////////////////////////////////////
+    };
+    ///////////////////////////
     render() {
         return (
-            <div className="topSpacing">
+            <div>
                 {CheckSecurity(this.state.resDataCheckSecurity)}
                 <Container>
-                    {/* ///////////update selected service //////////////*/}
-                    <Row>
-                        <Modal.Dialog className="editFormCustomClass" id="popupUpdate">
-                            <Modal.Header closeButton onClick={() => this.closeButton()}>
-                                <Modal.Title>Update selected service</Modal.Title>
-                            </Modal.Header>
-
-                            <Modal.Body>
-                                <p>Please update the information below and save.</p>
-                            </Modal.Body>
-
-                            <Modal.Footer>
-                                <Row>
-                                    <Col size="md-6">
-                                        <Form.Label>Service Name</Form.Label>
-                                        <input onChange={this.handleInputChange} name="updateServiceName" placeholder={this.state.resOneServ.serviceName} />
-                                    </Col>
-                                    <Col size="md-6">
-                                        <Form.Label>Sub Service of</Form.Label>
-
-                                        {this.state.allServices.length ? (
-                                            <Form.Control onChange={this.handleInputChange} as="select" name="UpdateSubId">
-                                                <option value={this.state.resParent.id}>{this.state.resParent.serviceName}</option>
-                                                <option>Choose...</option>
-                                                {this.state.allServices.map(singleService => (
-                                                    <option key={singleService.id} value={singleService.id}>{singleService.id} - {singleService.serviceName} - {singleService.subId}</option>
-                                                ))}
-                                            </Form.Control>
-
-                                        ) : (<h3>Loading Services...</h3>)}
-                                        <Form.Label>Service Description</Form.Label>
-                                        <Form.Control onChange={this.handleInputChange} name="updateserviceDescription" placeholder={this.state.resOneServ.serviceDescription} as="textarea" rows="1" />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col size="md-12">
-                                        <Button onClick={() => this.updateOneService(this.state.resOneServ.id)} variant="primary">Save changes</Button>
-                                    </Col>
-                                </Row>
-                            </Modal.Footer>
-                        </Modal.Dialog>
-                    </Row>
-                    {/* ////////////////////////ADD SERVICE/////////// */}
-                    <Row>
-                        <Col siz="md-12">
-                            <h2 className="text-center">Add Services</h2>
-                        </Col>
-                    </Row>
-
-                    {/* /////////////////add new service form */}
-                    <Row>
-                        <Col size="md-12">
-                            <Form>
-                                <Form.Row>
-                                    <Form.Group as={Col}>
-                                        <Form.Label>Service Name</Form.Label>
-                                        <Form.Control onChange={this.handleInputChange} type="text" name="serviceName" />
-                                    </Form.Group>
-                                    <Form.Group as={Col}>
-                                        <Form.Label>Sub Service of</Form.Label>
-
-                                        {this.state.allServices.length ? (
-                                            <Form.Control onChange={this.handleInputChange} as="select" name="subId">
-                                                <option>Choose...</option>
-                                                {this.state.allServices.map(singleService => (
-                                                    <option key={singleService.id} value={singleService.id}>{singleService.id} - {singleService.serviceName} - {singleService.subId}</option>
-                                                ))}
-                                            </Form.Control>
-
-                                        ) : (<h3>Loading Services...</h3>)}
-                                    </Form.Group>
-                                    <Form.Group as={Col}>
-                                        <Form.Label>Service Description</Form.Label>
-                                        <Form.Control onChange={this.handleInputChange} name="serviceDescription" as="textarea" rows="1" />
-                                    </Form.Group>
-                                    <Form.Group as={Col}>
-                                        <Button onClick={this.saveNewService} variant="primary" type="submit">
-                                            Save
-                                        </Button>
-                                    </Form.Group>
-                                </Form.Row>
-                            </Form>
-                        </Col>
-                    </Row>
-                    {/* ///////////////////show services */}
-                    <hr />
-                    <Row>
-                        <Col size="md-12">
-                            <h2 className="text-center">Here are the services</h2>
-                            {this.serviceMenu()}
-
-                        </Col>
-                    </Row>
-                    <hr />
-                    <Row>
+                    {/* <Row>
                         <Col size="md-12">
                             <h2 className="text-center"> Set up services to a client</h2>
                             <Form.Row>
-                                {this.state.allCustomers.length ? (
-                                    <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
-                                        <option>Choose the customer...</option>
-                                        {this.state.allCustomers.map(singleCustomer => (
-                                            <option key={singleCustomer.id} value={singleCustomer.id}>{singleCustomer.fName} - {singleCustomer.lName}</option>
-                                        ))}
-
-                                    </Form.Control>
-                                ) : (<h3>Loading</h3>)}
+                                <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
+                                    <option>Choose...</option>
+                                    {this.state.allCustomers.map(singleCustomer => (
+                                        <option key={singleCustomer.clientId} value={singleCustomer.clientId}>{singleCustomer.User.fName} - {singleCustomer.User.lName} - {singleCustomer.User.companyName}</option>
+                                    ))}
+                                </Form.Control>
                                 <br /><br />
-                                {this.state.allDeparments.length ? (
-                                    <Form.Control onChange={this.handleInputChange} as="select" name="DeparmentId">
-                                        <option>Choose the deparment...</option>
-                                        {this.state.allDeparments.map(singleDeparment => (
-                                            <option key={singleDeparment.id} value={singleDeparment.id}>{singleDeparment.fName} - {singleDeparment.lName}</option>
-                                        ))}
-
-                                    </Form.Control>
-                                ) : (<h3>Loading</h3>)}
-                                <br /><br />
-                                <Button onClick={this.assignAllServiceToClient} variant="primary" type="submit">
-                                    Assign All the services to the selected client
-                            </Button>
+                                <Button onClick={this.serviceClient} variant="primary" type="submit">
+                                    Search
+                        </Button>
                             </Form.Row>
+                        </Col>
+                    </Row> */}
+                    {/* ///////////////////show services */}
+                    <Row>
+                        <Col size="md-12">
+                            <h2 className="text-center">Here are the services</h2>
+                            {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p></p>)}
+
 
                         </Col>
-
                     </Row>
                 </Container>
             </div>
         )
     }
 }
-export default Services;
+export default Service;

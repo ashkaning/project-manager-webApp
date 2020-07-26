@@ -19,6 +19,8 @@ const serviceCustomer = require("./serviceCustomer")
 const serviceCustomerAssignedEmployeeUpdate = require("./serviceCustomerAssignedEmployeeUpdate")
 /* PROFILE */
 const profile = require("./profile");
+/* COMMENTS */
+const comments = require("./comments")
 ////////////////////////////////////
 /* MENU */
 router.use("/logOut", log)
@@ -40,4 +42,6 @@ router.use("/serviceCustomer", serviceCustomer);
 router.use("/serviceCustomerAssignedEmployeeUpdate", serviceCustomerAssignedEmployeeUpdate);
 /* PROFILE */
 router.use("/profile", profile);
+/* COMMENTS */
+router.use("/comments", comments);
 module.exports = router;

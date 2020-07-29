@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import API from "../utils/API";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
 import CheckSecurity from "../components/Security";
-//import Comments from "../components/Comments";
+import AllSerivcesForClient from "../components/Comments";
+import updateComment from "../components/Comments/update";
 import "./style.css";
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 
@@ -99,11 +101,12 @@ class Clients extends Component {
     }
     /////////////Get services for a selected client//////
     serviceClient = () => {
-        this.setState({ allServicesClient: '' })
+        this.setState({ allServicesClient: [] })
+        //AllSerivcesForClient(this.state.customerId,this.state.allServicesClient)
         API.serviceClient({ clientId: this.state.customerId })
             .then(resServiceClient => {
-                this.setState({ allServicesClientTemp: resServiceClient.data });
-                this.state.allServicesClientTemp.map(singleService => (
+                this.setState({ allServicesClient: resServiceClient.data });
+                this.state.allServicesClient.map(singleService => (
                     API.lastComment({
                         serviceId: singleService.id,
                         clientId: singleService.clientId
@@ -117,18 +120,19 @@ class Clients extends Component {
                                 Object.assign(singleService, { comments: 'there is no update to show' })
                             }
 
-                            this.setState({ allServicesClient: this.state.allServicesClientTemp },()=>  <span></span>)
+                            this.setState({}, () => <span></span>)
                         }).catch(err => console.log(err))
                 ))
-            }).catch(err => toast.error("There is an error. Please contact administrator (Getting Services for the selected service)"));
-    }
+                // Comments(this.state.allServicesClientTemp)
+            }
+            ).catch(err => toast.error("There is an error. Please contact administrator (Getting Services for the selected service)"));
+        }
     ////////////////UPDATE STATUS///////////////
     updateStatus = (event, updateIdStatus) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         }, () => this.updateRealStatus(updateIdStatus));
-
     }
     updateRealStatus = (evet) => {
         if (this.state.updateStatus === 0 || this.state.updateStatus === null) {
@@ -194,7 +198,8 @@ class Clients extends Component {
                                             <Form.Label className="serviceTitle">Notes/Updates/Comments</Form.Label>
                                             <div>
                                                 <span><b>Last Update: </b></span>
-                                                {singleMenu.comments}
+                                                <span>{singleMenu.comments} </span>
+                                                <Link className="btn btn-primary" onClick={()=>updateComment(singleMenu.id)} to="#">Update</Link>
                                             </div>
 
                                         </Form.Group>

@@ -171,6 +171,7 @@ class Service extends Component {
                                             <Form.Label className="serviceTitle">Department of</Form.Label>
 
                                             {this.getEmployee(singleMenu.employeeId, singleMenu.id)}
+                                        <Button onClick={() => this.chatWindow(singleMenu.id, singleMenu.clientId)} variant="primary">Notes</Button>
 
                                         </Form.Group>
                                        
@@ -207,6 +208,8 @@ class Service extends Component {
                                 <Form.Group as={Col} className="text-center">
                                     <Form.Label className="serviceTitle">Department of</Form.Label>
                                     {this.getEmployee(singleParentsubMenu.employeeId, singleParentsubMenu.id)}
+                                    <Button onClick={() => this.chatWindow(singleParentsubMenu.id, singleParentsubMenu.clientId)} variant="primary">Notes</Button>
+
                                 </Form.Group>
                             </Form.Row>
                         </Form>
@@ -215,6 +218,26 @@ class Service extends Component {
                 </ul >
             ))
         )
+    }
+    chatWindow = (serviceId, clientId) => {
+        API.showAllComments({
+            ClientServiceId: serviceId,
+            UserId: clientId
+        }).then(resAllComments => {
+            //document.getElementById("popupUpdate").style.display = 'block';
+            this.setState({ allCommentsData: resAllComments.data })
+            console.log(this.state.allCommentsData)
+            if (this.state.roleId >= 1 && this.state.roleId <= 6) {
+                console.log('employee')
+            }
+            else if (this.state.roleId ===13){
+                console.log('client')
+            }
+            else{
+                CheckSecurity()
+            }
+        }).catch(err => toast.error("There is an error. Please contact administrator (Chat Box)"))
+
     }
     ////////////////////////////
     handleInputChange = event => {

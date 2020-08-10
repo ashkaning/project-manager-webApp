@@ -7,10 +7,24 @@ module.exports = {
             {
                 ClientServiceId: req.body.serviceId
             },
-            order: [['updatedAt', 'DESC']] 
+            order: [['updatedAt', 'DESC']]
         })
             .then(result => {
                 res.json(result)
-            }).catch(err => console.log(err))
+            }).catch(err => res.status(422).json(err))
+    },
+    allComments: (req, res) => {
+        db.Comments.findAll({
+            where: {
+                ClientServiceId: req.body.ClientServiceId
+            },
+            include: [{
+                model: db.Users,
+                require: true,
+                attributes: { exclude: ['password'] }
+            }],
+        }).then(result => {
+            res.json(result)
+        }).catch(err => res.status(422).json(err))
     }
 }

@@ -5,33 +5,40 @@ import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
 import CheckSecurity from "../components/Security";
+import { FormBtn } from "../components/Form";
 import AllSerivcesForClient from "../components/Comments";
-import updateComment from "../components/Comments/update";
-import "./style.css";
+import { updateComment, closeButton } from "../components/Comments/update";
+import Moment from 'react-moment';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
+import StickyBox from "react-sticky-box";
+import "./style.css";
 
 class Clients extends Component {
-    state = {
-        allCustomers: [],
-        allServicesClientTemp: [],
-        allServicesClient: [],
-        subSingleMenu: [],
-        customerId: null,
-        status: [
-            { value: "0", label: "Not Activated" },
-            { value: "1", label: "Waiting on Client" },
-            { value: "2", label: "Completed" },
-            { value: "3", label: "Canceled" }
-        ],
-        updateStatus: '',
-        updateEmployee: '',
-        getOneEmployee: [],
-        getAllEmployees: [],
-        resDataCheckSecurity: {},
-        roleId: '',
-        userId: '',
-        lastComment: ''
-
+    constructor(props) {
+        super(props)
+        this.state = {
+            allCustomers: [],
+            allServicesClientTemp: [],
+            allServicesClient: [],
+            subSingleMenu: [],
+            customerId: null,
+            status: [
+                { value: "0", label: "Not Activated" },
+                { value: "1", label: "Waiting on Client" },
+                { value: "2", label: "Completed" },
+                { value: "3", label: "Canceled" }
+            ],
+            updateStatus: '',
+            updateEmployee: '',
+            getOneEmployee: [],
+            getAllEmployees: [],
+            resDataCheckSecurity: {},
+            roleId: '',
+            userId: '',
+            lastComment: '',
+            Comments: {},
+            allCommentsData: {}
+        }
     }
 
     componentDidMount() {
@@ -106,7 +113,7 @@ class Clients extends Component {
         API.serviceClient({ clientId: this.state.customerId })
             .then(resServiceClient => {
                 this.setState({ allServicesClient: resServiceClient.data });
-                this.state.allServicesClient.map(singleService => (
+                /* this.state.allServicesClient.map(singleService => (
                     API.lastComment({
                         serviceId: singleService.id,
                         clientId: singleService.clientId
@@ -114,19 +121,29 @@ class Clients extends Component {
                         .then(resLastComment => {
 
                             if (resLastComment.data !== null) {
-                                Object.assign(singleService, { comments: resLastComment.data.comment })
+                                this.setState({
+                                    Comments: {
+                                        comment: resLastComment.data.comment,
+                                        lastCommentDate: resLastComment.data.updatedAt
+                                    }
+                                })
+                                Object.assign(singleService, this.state.Comments)
                             }
                             else {
-                                Object.assign(singleService, { comments: 'there is no update to show' })
+                                this.setState({
+                                    Comments: {
+                                        comment: 'there is no update to show',
+                                        lastCommentDate: null
+                                    }
+                                })
+                                Object.assign(singleService, this.state.Comments)
                             }
-
                             this.setState({}, () => <span></span>)
                         }).catch(err => console.log(err))
-                ))
-                // Comments(this.state.allServicesClientTemp)
+                )) */
             }
             ).catch(err => toast.error("There is an error. Please contact administrator (Getting Services for the selected service)"));
-        }
+    }
     ////////////////UPDATE STATUS///////////////
     updateStatus = (event, updateIdStatus) => {
         const { name, value } = event.target;
@@ -169,13 +186,31 @@ class Clients extends Component {
             return (<option>Select...</option>)
         }
     }
+    /////////////////CHAT WINDOW??????????????????????????
+    chatWindow = (serviceId, clientId) => {
+        API.showAllComments({
+            ClientServiceId: serviceId,
+            UserId: clientId
+        }).then(resAllComments => {
+            document.getElementById("popupUpdate").style.display = 'block';
+            this.setState({ allCommentsData: resAllComments.data })
+            console.log(this.state.allCommentsData)
+            /* if (this.state.roleId >= 1 && this.state.roleId <= 6) {
+            }
+            else if (this.state.roleId ===13){
+            }
+            else{
+                CheckSecurity()
+            } */
+        }).catch(err => toast.error("There is an error. Please contact administrator (Chat Box)"))
+
+    }
     /////////////MENU SERVICE SIDEBAR//////////
     serviceMenu = () => {
         return (
             <ol>
                 {this.state.allServicesClient.map((singleMenu) => {
                     if (singleMenu.Service.subId === 0) {
-
                         return (
                             <li key={singleMenu.id}>{singleMenu.Service.serviceName}
                                 <Form>
@@ -197,9 +232,14 @@ class Clients extends Component {
                                         <Form.Group as={Col} className="text-center">
                                             <Form.Label className="serviceTitle">Notes/Updates/Comments</Form.Label>
                                             <div>
-                                                <span><b>Last Update: </b></span>
-                                                <span>{singleMenu.comments} </span>
-                                                <Link className="btn btn-primary" onClick={()=>updateComment(singleMenu.id)} to="#">Update</Link>
+                                                <span><b>Last Update: </b>{singleMenu.comment} </span>
+                                                <span>
+
+                                                    {(singleMenu.lastCommentDate === null) ? '' : <sup>(<Moment format="MM/DD/YYYY - HH:mm" date={singleMenu.lastCommentDate} />)</sup>}
+
+                                                </span>
+                                                <br />
+                                                <Button onClick={() => this.chatWindow(singleMenu.id, singleMenu.clientId)} variant="primary">Notes</Button>
                                             </div>
 
                                         </Form.Group>
@@ -224,6 +264,7 @@ class Clients extends Component {
                         <Form>
                             <Form.Row>
                                 <Form.Group as={Col}>
+                                    <Form.Label className="serviceTitle">Status</Form.Label>
                                     <Form.Control onChange={(evt) => this.updateStatus(evt, singleParentsubMenu.id)} as="select" name="updateStatus">
                                         {this.selectFunction(singleParentsubMenu.status)}
                                         <option className="notActive" value="0">Not Activate</option>
@@ -239,8 +280,15 @@ class Clients extends Component {
                                 </Form.Group>
                                 <Form.Group as={Col} className="text-center">
                                     <Form.Label className="serviceTitle">Notes/Updates/Comments</Form.Label>
-                                    <div><span><b>Last Update: </b></span>
-                                        {singleParentsubMenu.comments}
+                                    <div>
+                                        <span><b>Last Update: </b>{singleParentsubMenu.comment} </span>
+                                        <span>
+
+                                            {(singleParentsubMenu.lastCommentDate === null) ? '' : <sup>(<Moment format="MM/DD/YYYY - HH:mm" date={singleParentsubMenu.lastCommentDate} />)</sup>}
+
+                                        </span>
+                                        <br />
+                                        <Button onClick={() => this.chatWindow(singleParentsubMenu.id, singleParentsubMenu.clientId)} variant="primary">Notes</Button>
                                     </div>
                                 </Form.Group>
                             </Form.Row>
@@ -265,8 +313,71 @@ class Clients extends Component {
             <div>
                 {CheckSecurity(this.state.resDataCheckSecurity)}
                 <Container fluid>
+                    <StickyBox className="chat" offsetTop={20} offsetBottom={20}>
+                        <div>
+                            <Modal.Dialog id="popupUpdate">
+                                <Modal.Header closeButton onClick={() => closeButton()}>
+                                    <Modal.Title>Comments</Modal.Title>
+                                </Modal.Header>
+                                {this.state.allCommentsData.length ? (
+                                    <Modal.Body>
+                                        {this.state.allCommentsData.map(singleComment => {
+                                            if (this.state.roleId >= 1 && this.state.roleId <= 6) {
+                                                return (
+                                                    <Row key={singleComment.id}>
+                                                        <Col size="md-12">
+                                                            {(singleComment.User.RoleId === 13) ?
+                                                                <div className="text-left">
+                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
+                                                                    <p>{singleComment.comment}</p>
+                                                                </div>
+                                                                :
+                                                                <div className="text-right">
+                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
+                                                                    <p>{singleComment.comment}</p>
+                                                                </div>}
+                                                        </Col>
+                                                    </Row>
+                                                )
+                                            }
+                                            else if (this.state.roleId === 13) {
+                                                return (
+                                                    <Row key={singleComment.id}>
+                                                        <Col size="md-12">
+                                                            {(singleComment.User.RoleId === 13) ?
+                                                                <div className="text-right">
+                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
+                                                                    <p>{singleComment.comment}</p>
+                                                                </div>
+                                                                :
+                                                                <div className="text-left">
+                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
+                                                                    <p>{singleComment.comment}</p>
+                                                                </div>}
+                                                        </Col>
+                                                    </Row>
+                                                )
+                                            } else {
+                                                CheckSecurity()
+                                            }
+                                        })}
+                                        <br />
+                                        <Row>
+                                            <Col size="md-12">
+                                                <Button variant="primary">send</Button>
+                                            </Col>
+                                        </Row>
+                                    </Modal.Body>
+                                ) : ''}
+                                <Modal.Footer>
+                                </Modal.Footer>
+                            </Modal.Dialog>
+                        </div>
+                    </StickyBox>
                     <Row>
-                        <Col size="md-12">
+                        <Col size="md-4">
+                        </Col>
+                        <Col size="md-4">
                             <h2 className="text-center"> Set up services to a client</h2>
                             <Form.Row>
                                 <Form.Control onChange={this.handleInputChange} as="select" name="customerId">
@@ -281,15 +392,14 @@ class Clients extends Component {
                             </Button>
                             </Form.Row>
                         </Col>
+                        <Col size="md-4">
+                        </Col>
                     </Row>
                     {/* ///////////////////show services */}
                     <hr />
                     <Row>
                         <Col size="md-12">
-                            <h2 className="text-center">Here are the services</h2>
-                            {this.state.allServicesClient.length > null ? this.serviceMenu() : (<p>Please choose a client to see the services</p>)}
-
-
+                            {this.state.allServicesClient.length > null ? this.serviceMenu() : (<h3 className="text-center">Please choose a client to see the services</h3>)}
                         </Col>
                     </Row>
                 </Container>

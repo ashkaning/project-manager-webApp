@@ -21,6 +21,7 @@ const serviceCustomerAssignedEmployeeUpdate = require("./serviceCustomerAssigned
 const profile = require("./profile");
 /* COMMENTS */
 const comments = require("./comments")
+const allComments = require("./allComments")
 ////////////////////////////////////
 /* MENU */
 router.use("/logOut", log)
@@ -44,4 +45,5 @@ router.use("/serviceCustomerAssignedEmployeeUpdate", serviceCustomerAssignedEmpl
 router.use("/profile", profile);
 /* COMMENTS */
 router.use("/comments", comments);
+router.use("/allComments", allComments);
 module.exports = router;

@@ -56,3 +56,6 @@ p,span{
     font-weight: bolder;
     color: #7a2f2f;
 }
+.chat{
+    z-index: 99999;
+}

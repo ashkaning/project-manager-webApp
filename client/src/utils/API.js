@@ -84,6 +84,9 @@ export default {
     /* COMMENTS */
     lastComment: function (data) {
         return axios.post("/api/comments", data)
+    },
+    showAllComments: function (data){
+        return axios.post("/api/allComments",data)
     }
 
 }

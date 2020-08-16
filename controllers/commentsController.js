@@ -26,5 +26,18 @@ module.exports = {
         }).then(result => {
             res.json(result)
         }).catch(err => res.status(422).json(err))
+    },
+    saveComment: (req, res) => {
+        db.Comments.create({
+            comment: req.body.comment,
+            UserId: req.body.UserId,
+            ClientServiceId: req.body.ClientServiceId
+        }).then(result => {
+
+            res.json({
+                UserId: req.body.UserId,
+                ClientServiceId: req.body.ClientServiceId
+            });
+        }).catch(err => res.status(422).json(err))
     }
 }

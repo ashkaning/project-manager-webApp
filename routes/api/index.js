@@ -22,6 +22,7 @@ const profile = require("./profile");
 /* COMMENTS */
 const comments = require("./comments")
 const allComments = require("./allComments")
+const comment = require("./comment")
 ////////////////////////////////////
 /* MENU */
 router.use("/logOut", log)
@@ -46,4 +47,5 @@ router.use("/profile", profile);
 /* COMMENTS */
 router.use("/comments", comments);
 router.use("/allComments", allComments);
+router.use("/comment", comment);
 module.exports = router;

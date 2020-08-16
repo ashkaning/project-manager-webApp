@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import API from "../utils/API";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import { Row, Container } from "../components/Grid";
 import CheckSecurity from "../components/Security";
-import { FormBtn } from "../components/Form";
-import AllSerivcesForClient from "../components/Comments";
-import { updateComment, closeButton } from "../components/Comments/update";
+import { closeButton } from "../components/Comments/update";
 import Moment from 'react-moment';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 import StickyBox from "react-sticky-box";
@@ -35,9 +32,10 @@ class Clients extends Component {
             resDataCheckSecurity: {},
             roleId: '',
             userId: '',
+            singleComment: '',
             lastComment: '',
             Comments: {},
-            allCommentsData: {}
+            allCommentsData: {},
         }
     }
 
@@ -108,7 +106,7 @@ class Clients extends Component {
     }
     /////////////Get services for a selected client//////
     serviceClient = () => {
-        this.setState({ allServicesClient: [] })
+        this.setState({ allServicesClient: [], customerId: '' })
         //AllSerivcesForClient(this.state.customerId,this.state.allServicesClient)
         API.serviceClient({ clientId: this.state.customerId })
             .then(resServiceClient => {
@@ -186,24 +184,37 @@ class Clients extends Component {
             return (<option>Select...</option>)
         }
     }
-    /////////////////CHAT WINDOW??????????????????????????
+    /////////////////CHAT WINDOW/////////////////////
     chatWindow = (serviceId, clientId) => {
+        this.setState({ allCommentsData: [] })
         API.showAllComments({
             ClientServiceId: serviceId,
             UserId: clientId
         }).then(resAllComments => {
             document.getElementById("popupUpdate").style.display = 'block';
-            this.setState({ allCommentsData: resAllComments.data })
-            console.log(this.state.allCommentsData)
-            /* if (this.state.roleId >= 1 && this.state.roleId <= 6) {
+            if (resAllComments.data == 0) {
+                this.setState({
+                    allCommentsData: [{
+                        ClientServiceId: serviceId,
+                        User: { roleId: this.state.roleId }
+                    }]
+                })
+            } else {
+                this.setState({ allCommentsData: resAllComments.data })
+
             }
-            else if (this.state.roleId ===13){
-            }
-            else{
-                CheckSecurity()
-            } */
         }).catch(err => toast.error("There is an error. Please contact administrator (Chat Box)"))
 
+    }
+    ///////////SAVE COMMENTS///////////////
+    saveComment = (UserId, ClientServiceId) => {
+        API.saveComment({
+            UserId: UserId,
+            ClientServiceId: ClientServiceId,
+            comment: this.state.singleComment
+        }).then(resultSingleComment => {
+            this.chatWindow(resultSingleComment.data.ClientServiceId, this.state.customerId)
+        }).catch(err => toast.error("There is an error. Please contact administrator (save single comment)"))
     }
     /////////////MENU SERVICE SIDEBAR//////////
     serviceMenu = () => {
@@ -299,6 +310,7 @@ class Clients extends Component {
             ))
         )
     }
+
     ////////////////////////////
     handleInputChange = event => {
         const { name, value } = event.target;
@@ -322,49 +334,53 @@ class Clients extends Component {
                                 {this.state.allCommentsData.length ? (
                                     <Modal.Body>
                                         {this.state.allCommentsData.map(singleComment => {
-                                            if (this.state.roleId >= 1 && this.state.roleId <= 6) {
-                                                return (
-                                                    <Row key={singleComment.id}>
-                                                        <Col size="md-12">
-                                                            {(singleComment.User.RoleId === 13) ?
-                                                                <div className="text-left">
-                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
-                                                                    <p>{singleComment.comment}</p>
-                                                                </div>
-                                                                :
-                                                                <div className="text-right">
-                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
-                                                                    <p>{singleComment.comment}</p>
-                                                                </div>}
-                                                        </Col>
-                                                    </Row>
-                                                )
-                                            }
-                                            else if (this.state.roleId === 13) {
-                                                return (
-                                                    <Row key={singleComment.id}>
-                                                        <Col size="md-12">
-                                                            {(singleComment.User.RoleId === 13) ?
-                                                                <div className="text-right">
-                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
-                                                                    <p>{singleComment.comment}</p>
-                                                                </div>
-                                                                :
-                                                                <div className="text-left">
-                                                                    <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
-                                                                    <p>{singleComment.comment}</p>
-                                                                </div>}
-                                                        </Col>
-                                                    </Row>
-                                                )
-                                            } else {
-                                                CheckSecurity()
-                                            }
+                                            //if (this.state.roleId >= 1 && this.state.roleId <= 6) {
+                                            return (
+                                                <Row key={singleComment.id}>
+                                                    <Col size="md-12">
+                                                        {(singleComment.User.RoleId === 13) ?
+                                                            <div className="text-left">
+                                                                <span>{singleComment.User.fName} {singleComment.User.lName} </span><sup>
+                                                                    {(singleComment.createdAt) ? (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />) : ''}</sup>
+                                                                <p>{singleComment.comment}</p>
+                                                            </div>
+                                                            :
+                                                            <div className="text-right">
+                                                                <span>{singleComment.User.fName} {singleComment.User.lName} </span><sup>
+                                                                    {(singleComment.createdAt) ? (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />) : ''}</sup>
+                                                                <p>{singleComment.comment}</p>
+                                                            </div>}
+                                                    </Col>
+                                                </Row>
+                                            )
+                                            //}
+                                            /*  else if (this.state.roleId === 13) {
+                                                 return (
+                                                     <Row key={singleComment.id}>
+                                                         <Col size="md-12">
+                                                             {(singleComment.User.RoleId === 13) ?
+                                                                 <div className="text-right">
+                                                                     <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
+                                                                     <p>{singleComment.comment}</p>
+                                                                 </div>
+                                                                 :
+                                                                 <div className="text-left">
+                                                                     <span>{singleComment.User.fName} {singleComment.User.lName}</span><sup> (<Moment format="MM/DD/YYYY - HH:mm" date={singleComment.createdAt} />)</sup>
+                                                                     <p>{singleComment.comment}</p>
+                                                                 </div>}
+                                                         </Col>
+                                                     </Row>
+                                                 )
+                                             } */
                                         })}
-                                        <br />
                                         <Row>
-                                            <Col size="md-12">
-                                                <Button variant="primary">send</Button>
+                                            <br />
+                                            <hr />
+                                            <Col md={12}>
+                                                <Form.Control onChange={this.handleInputChange} name="singleComment" as="textarea" rows="3" />
+                                            </Col>
+                                            <Col md={12}>
+                                                <Button onClick={(evt) => this.saveComment(this.state.userId, this.state.allCommentsData[0].ClientServiceId)} variant="primary">send</Button>
                                             </Col>
                                         </Row>
                                     </Modal.Body>
@@ -403,7 +419,7 @@ class Clients extends Component {
                         </Col>
                     </Row>
                 </Container>
-            </div>
+            </div >
         )
     }
 }

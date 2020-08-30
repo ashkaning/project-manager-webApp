@@ -111,7 +111,7 @@ class Clients extends Component {
         API.serviceClient({ clientId: this.state.customerId })
             .then(resServiceClient => {
                 this.setState({ allServicesClient: resServiceClient.data });
-                /* this.state.allServicesClient.map(singleService => (
+                this.state.allServicesClient.map(singleService => (
                     API.lastComment({
                         serviceId: singleService.id,
                         clientId: singleService.clientId
@@ -138,7 +138,7 @@ class Clients extends Component {
                             }
                             this.setState({}, () => <span></span>)
                         }).catch(err => console.log(err))
-                )) */
+                ))
             }
             ).catch(err => toast.error("There is an error. Please contact administrator (Getting Services for the selected service)"));
     }
